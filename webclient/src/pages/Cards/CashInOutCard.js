@@ -4,7 +4,7 @@ import './Cards.sass';
 export default class CashInOutCard extends Component {
   render() {
     return (
-      <Link to="./CashInOutCard">
+      <Link to={`${this.props.pathname}/cashinout`}>
         <div>CashInOutCard</div>
       </Link>
     );
