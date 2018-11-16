@@ -5,6 +5,7 @@ import {
   Switch,
   Redirect
 } from "react-router-dom";
+import Cards from "./pages/Cards";
 import "./App.css";
 
 const Login = () => <div> Логин </div>;
@@ -18,6 +19,7 @@ class App extends Component {
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/invoices" component={Invoices} />
+            <Route path="/invoices/:invoiceId" component={Cards} />
             <Redirect exact from="/" to="/login" />
           </Switch>
         </Router>
