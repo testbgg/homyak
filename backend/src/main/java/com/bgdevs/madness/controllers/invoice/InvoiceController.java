@@ -38,4 +38,10 @@ public class InvoiceController {
         InvoiceModel invoiceModel = this.invoiceService.create(createInvoiceModel);
         return ResponseEntity.created(URI.create("/invoices/" + invoiceModel.getId())).body(invoiceModel);
     }
+
+    @PutMapping("/{invoiceId}")
+    public ResponseEntity<?> markInvoiceAsCard(@PathVariable long invoiceId) {
+        this.invoiceService.markAsCard(invoiceId);
+        return ResponseEntity.ok().build();
+    }
 }

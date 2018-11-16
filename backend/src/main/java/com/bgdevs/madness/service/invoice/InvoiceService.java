@@ -1,5 +1,6 @@
 package com.bgdevs.madness.service.invoice;
 
+import com.bgdevs.madness.dao.entities.invoice.CurrencyType;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
 import com.bgdevs.madness.dao.repositories.InvoiceRepository;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.UUID;
 
 import static com.bgdevs.madness.service.invoice.model.InvoiceModelMapper.toModel;
 
@@ -40,8 +44,20 @@ public class InvoiceService {
         return toModel(created);
     }
 
-    //todo
     private Invoice toEntity(CreateInvoiceModel invoice) {
-        return null;
+
+        return new Invoice(invoice.getOwnerId(),
+                UUID.randomUUID().toString(),
+                BigDecimal.ZERO,
+                CurrencyType.valueOf(invoice.getCurrencyType()));
+    }
+
+    public void markAsCard(long invoiceId) {
+        this.invoiceRepository.findById(invoiceId)
+                .map(i -> {
+                    i.setCard(true);
+                    return i;
+                })
+                .orElseThrow(() -> new ElementNotFoundException(invoiceId));
     }
 }
