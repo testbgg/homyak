@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -15,6 +15,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <div className="App-background-top" />
         <Router>
           <Switch>
             <Route path="/login" component={Login} />
@@ -23,6 +24,7 @@ class App extends Component {
             <Redirect exact from="/" to="/login" />
           </Switch>
         </Router>
+        <div className="App-background-bottom" />
       </div>
     );
   }
