@@ -1,1 +1,4 @@
 rootProject.name = 'homyak'
+
+include "webclient"
+include "backend"
