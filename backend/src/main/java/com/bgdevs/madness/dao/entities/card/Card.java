@@ -18,6 +18,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Card extends BaseEntity {
 
+    private String number;
+
     @Enumerated(EnumType.STRING)
     private CardType type;
 
