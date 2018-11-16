@@ -12,4 +12,5 @@
 .App-background-bottom {
   background-color: black;
   height: 50vh;
+  padding: 10px;
 }
