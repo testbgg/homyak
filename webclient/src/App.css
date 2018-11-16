@@ -3,3 +3,14 @@
 .App {
   text-align: center;
 }
+
+.App-background-top {
+  background-color: crimson;
+  height: 50vh;
+}
+
+.App-background-bottom {
+  background-color: black;
+  height: 50vh;
+  padding: 10px;
+}
