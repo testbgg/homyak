@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -7,9 +7,8 @@ import {
 } from "react-router-dom";
 import Cards from "./pages/Cards";
 import Login from "./pages/Login";
+import Invoices from "./pages/Invoices";
 import "./App.css";
-
-const Invoices = () => <div> Пароль </div>;
 
 class App extends Component {
   render() {
