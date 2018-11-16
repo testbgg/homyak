@@ -8,14 +8,12 @@ import {
 import Cards from "./pages/Cards";
 import Login from "./pages/Login";
 import Invoices from "./pages/Invoices";
-import { Row } from "antd";
 import "./App.css";
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <Row type="flex">
+      <div className="container">
           <Router>
             <Switch>
               <Route path="/login" component={Login} />
@@ -24,7 +22,6 @@ class App extends Component {
               <Redirect exact from="/" to="/login" />
             </Switch>
           </Router>
-        </Row>
       </div>
     );
   }
