@@ -5,7 +5,7 @@ import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 
 /**
- * @author Nikita Shaldenkov <nikita.shaldenkov@bostongene.com>
+ * @author Nikita Shaldenkov
  */
 public class BaseEntityListener {
 

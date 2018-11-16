@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 /**
- * @author Nikita Shaldenkov <nikita.shaldenkov@bostongene.com>
+ * @author Nikita Shaldenkov
  */
 @RestController
 @RequestMapping("/cards")
@@ -24,4 +24,6 @@ public class CardController {
         List<String> types = Stream.of(CardType.values()).map(CardType::getLabel).collect(toList());
         return ResponseEntity.ok(types);
     }
+
+
 }

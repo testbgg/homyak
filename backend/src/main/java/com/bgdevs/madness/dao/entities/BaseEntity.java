@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * @author Nikita Shaldenkov <nikita.shaldenkov@bostongene.com>
+ * @author Nikita Shaldenkov
  */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @MappedSuperclass

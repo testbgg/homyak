@@ -3,7 +3,7 @@ package com.bgdevs.madness.dao.entities.card;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * @author Nikita Shaldenkov <nikita.shaldenkov@bostongene.com>
+ * @author Nikita Shaldenkov
  */
 public enum CardType {
 

@@ -7,18 +7,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.List;
 
 /**
- * @author Nikita Shaldenkov <nikita.shaldenkov@bostongene.com>
+ * @author Nikita Shaldenkov
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
-public class Employee extends BaseEntity {
+public class EmployeeInfo extends BaseEntity {
 
     private String firstName;
 
@@ -28,7 +29,7 @@ public class Employee extends BaseEntity {
 
     private String passportNumber;
 
-    @OneToMany
+    @OneToMany(mappedBy = "employeeInfo", fetch = FetchType.EAGER)
     private List<Card> cards;
 
 }
