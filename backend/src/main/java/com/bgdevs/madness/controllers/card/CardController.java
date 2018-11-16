@@ -29,19 +29,13 @@ public class CardController {
     private CardService cardService;
 
     @GetMapping("/types")
-    public ResponseEntity<?> getCardTypes() {
+    public ResponseEntity<Object> getCardTypes() {
         List<String> types = Stream.of(CardType.values()).map(CardType::getLabel).collect(toList());
         return ResponseEntity.ok(types);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getCardsByInvoiceId(@RequestParam long invoiceId,
-                                                 @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(this.cardService.findByInvoiceId(invoiceId, pageable));
-    }
-
-    @GetMapping
-    public ResponseEntity<?> createCard(@Valid @RequestBody CreateCardModel createCardModel) {
+    @PostMapping
+    public ResponseEntity<Object> createCard(@Valid @RequestBody CreateCardModel createCardModel) {
         CardModel cardModel = this.cardService.create(createCardModel);
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }

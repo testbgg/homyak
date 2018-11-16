@@ -1,12 +1,12 @@
 package com.bgdevs.madness.controllers.invoice;
 
+import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.service.invoice.InvoiceService;
 import com.bgdevs.madness.service.invoice.model.CreateInvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +22,12 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
+    @InitBinder
+    public void initTreatmentConverters(WebDataBinder dataBinder)
+    {
+        dataBinder.registerCustomEditor(CardType.class, new CardTypeConverter());
+    }
+
     @GetMapping
     public ResponseEntity<?> findAll(@PageableDefault Pageable pageable,
                                      @RequestParam long ownerId) {
@@ -29,18 +35,24 @@ public class InvoiceController {
     }
 
     @GetMapping("/{invoiceId}")
-    public ResponseEntity<?> findOne(@PathVariable long invoiceId) {
+    public ResponseEntity<Object> findOne(@PathVariable long invoiceId) {
         return ResponseEntity.ok(this.invoiceService.findOne(invoiceId));
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel) {
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel) {
         InvoiceModel invoiceModel = this.invoiceService.create(createInvoiceModel);
         return ResponseEntity.created(URI.create("/invoices/" + invoiceModel.getId())).body(invoiceModel);
     }
 
-    @PutMapping("/{invoiceId}")
-    public ResponseEntity<?> markInvoiceAsCard(@PathVariable long invoiceId) {
+    @GetMapping("/{invoiceId}/cards")
+    public ResponseEntity<Object> getCardsByType(@PathVariable long invoiceId,
+                                                 @RequestParam CardType type) {
+        return ResponseEntity.ok(this.invoiceService.findCardsByType(invoiceId, type));
+    }
+
+    @PostMapping("/{invoiceId}/mark-as-carded")
+    public ResponseEntity<Object> markInvoiceAsCard(@PathVariable long invoiceId) {
         this.invoiceService.markAsCard(invoiceId);
         return ResponseEntity.ok().build();
     }
