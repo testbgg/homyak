@@ -6,9 +6,9 @@ import {
   Redirect
 } from "react-router-dom";
 import Cards from "./pages/Cards";
+import Login from "./pages/Login";
 import "./App.css";
 
-const Login = () => <div> Логин </div>;
 const Invoices = () => <div> Пароль </div>;
 
 class App extends Component {
