@@ -8,7 +8,7 @@ import {
 import "./App.css";
 
 const Login = () => <div> Логин </div>;
-const Cards = () => <div> Пароль </div>;
+const Invoices = () => <div> Пароль </div>;
 
 class App extends Component {
   render() {
@@ -17,7 +17,7 @@ class App extends Component {
         <Router>
           <Switch>
             <Route path="/login" component={Login} />
-            <Route path="/cards" component={Cards} />
+            <Route path="/invoices" component={Invoices} />
             <Redirect exact from="/" to="/login" />
           </Switch>
         </Router>
