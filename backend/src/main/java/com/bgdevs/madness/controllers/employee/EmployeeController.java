@@ -1,6 +1,5 @@
 package com.bgdevs.madness.controllers.employee;
 
-import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.service.employee.EmployeeService;
 import com.bgdevs.madness.service.employee.model.CreateEmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModel;
@@ -11,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import static java.net.URI.create;
 
 /**
  * @author Nikita Shaldenkov
@@ -21,15 +20,13 @@ import java.net.URISyntaxException;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
 
     @Autowired
     private EmployeeService employeeService;
 
     @GetMapping
     public ResponseEntity<?> getEmployees(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(this.employeeRepository.findAll(pageable));
+        return ResponseEntity.ok(this.employeeService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
@@ -43,8 +40,8 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEmployee(@Valid @RequestBody CreateEmployeeModel employee) throws URISyntaxException {
+    public ResponseEntity<?> createEmployee(@Valid @RequestBody CreateEmployeeModel employee) {
         EmployeeModel createdEmployee = this.employeeService.create(employee);
-        return ResponseEntity.created(new URI("/employees/" + createdEmployee.getId())).body(createdEmployee);
+        return ResponseEntity.created(create("/employees/" + createdEmployee.getId())).body(createdEmployee);
     }
 }

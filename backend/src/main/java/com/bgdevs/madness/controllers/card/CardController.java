@@ -1,14 +1,20 @@
 package com.bgdevs.madness.controllers.card;
 
 import com.bgdevs.madness.dao.entities.card.CardType;
+import com.bgdevs.madness.service.card.CardService;
+import com.bgdevs.madness.service.card.model.CardModel;
+import com.bgdevs.madness.service.card.model.CreateCardModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.net.URI.create;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -19,11 +25,25 @@ import static java.util.stream.Collectors.toList;
 public class CardController {
 
 
+    @Autowired
+    private CardService cardService;
+
     @GetMapping("/types")
     public ResponseEntity<?> getCardTypes() {
         List<String> types = Stream.of(CardType.values()).map(CardType::getLabel).collect(toList());
         return ResponseEntity.ok(types);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<?> getCardsByInvoiceId(@RequestParam long invoiceId,
+                                                 @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(this.cardService.findByInvoiceId(invoiceId, pageable));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> createCard(@Valid @RequestBody CreateCardModel createCardModel) {
+        CardModel cardModel = this.cardService.create(createCardModel);
+        return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
+    }
 
 }
