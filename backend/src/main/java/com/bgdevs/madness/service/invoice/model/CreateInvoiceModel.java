@@ -15,4 +15,5 @@ public class CreateInvoiceModel {
 
     @NotNull
     private String currencyType;
+
 }
