@@ -1,6 +1,5 @@
 package com.bgdevs.madness.controllers.employee;
 
-import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.service.employee.EmployeeService;
 import com.bgdevs.madness.service.employee.model.CreateEmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModel;
@@ -21,15 +20,13 @@ import java.net.URISyntaxException;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
 
     @Autowired
     private EmployeeService employeeService;
 
     @GetMapping
     public ResponseEntity<?> getEmployees(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(this.employeeRepository.findAll(pageable));
+        return ResponseEntity.ok(this.employeeService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
