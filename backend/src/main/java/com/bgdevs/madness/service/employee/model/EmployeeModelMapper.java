@@ -12,7 +12,7 @@ public class EmployeeModelMapper {
     public static EmployeeModel toModel(Employee employee) {
         return EmployeeModel.builder()
                 .firstName(employee.getFirstName())
-                .secondName(employee.getSecondName())
+                .secondName(employee.getLastName())
                 .birthdayDate(employee.getBirthdayDate())
                 .id(employee.getId())
                 .cards(employee.getCards().stream()

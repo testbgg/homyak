@@ -38,7 +38,7 @@ public class EmployeeService {
     private Employee toEntity(CreateEmployeeModel employee) {
         return Employee.builder()
                 .firstName(employee.getFirstName())
-                .secondName(employee.getSecondName())
+                .lastName(employee.getSecondName())
                 .birthdayDate(employee.getBirthdayDate())
                 .passportNumber(employee.getPassportNumber())
                 .build();

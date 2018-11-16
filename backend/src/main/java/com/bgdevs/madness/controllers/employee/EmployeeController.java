@@ -26,7 +26,7 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<?> getEmployees(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(this.employeeService.findAll(pageable));
+        return ResponseEntity.ok(this.employeeService.findAll());
     }
 
     @GetMapping("/{id}")
