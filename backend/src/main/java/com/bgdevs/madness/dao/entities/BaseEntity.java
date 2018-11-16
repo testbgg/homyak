@@ -3,10 +3,7 @@ package com.bgdevs.madness.dao.entities;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,6 +18,9 @@ public class BaseEntity {
     @Id
     @GeneratedValue
     private long id;
+
+    @Version
+    private long version;
 
     private LocalDateTime createdDate;
 
@@ -45,5 +45,9 @@ public class BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public long getId() {
+        return id;
     }
 }

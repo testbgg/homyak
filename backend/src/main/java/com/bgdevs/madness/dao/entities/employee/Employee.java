@@ -2,10 +2,7 @@ package com.bgdevs.madness.dao.entities.employee;
 
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.card.Card;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +19,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Employee extends BaseEntity {
 
     @NotNull
