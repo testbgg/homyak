@@ -22,7 +22,7 @@ public class User extends BaseEntity {
 
     private String password;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "ownerId")
     private List<Invoice> invoices;
 
 

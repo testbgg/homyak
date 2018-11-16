@@ -17,7 +17,7 @@ public class InvoiceModelMapper {
                 .currencyType(invoice.getCurrencyType())
                 .isCard(invoice.isCard())
                 .number(invoice.getNumber())
-                .ownerId(invoice.getOwner().getId())
+                .ownerId(invoice.getOwnerId())
                 .cards(invoice.getCards().stream()
                         .map(CardModelMapper::toModel)
                         .collect(toList()))
