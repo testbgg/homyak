@@ -34,7 +34,7 @@ export default class Login extends Component {
           <FormItem>
             <Link to="/invoices/list">
               <Button type="primary" htmlType="submit">
-                Log in
+                Войти
               </Button>
             </Link>
           </FormItem>
