@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import CreditCard from './CreditCard';
 import DebetCard from './DebetCard';
 import CashInOutCard from './CashInOutCard';
 import './Cards.sass';
-export default class Cards extends Component {
+class Cards extends Component {
   render() {
+    const {
+      location: { pathname }
+    } = this.props;
     return (
       <div>
         <div>
@@ -13,12 +17,14 @@ export default class Cards extends Component {
             <div>right</div>
           </header>
           <main className="Cards__cards">
-            <CreditCard />
-            <DebetCard />
-            <CashInOutCard />
+            <CreditCard pathname={pathname} />
+            <DebetCard pathname={pathname} />
+            <CashInOutCard pathname={pathname} />
           </main>
         </div>
       </div>
     );
   }
 }
+
+export default withRouter(Cards);

@@ -4,7 +4,7 @@ import './Cards.sass';
 export default class CreditCard extends Component {
   render() {
     return (
-      <Link to="./CreditCard">
+      <Link to={`${this.props.pathname}/credit`}>
         <div>Credit Card</div>
       </Link>
     );
