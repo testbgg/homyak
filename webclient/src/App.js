@@ -17,8 +17,8 @@ class App extends Component {
           <Router>
             <Switch>
               <Route path="/login" component={Login} />
-              <Route path="/invoices" component={Invoices} />
-              <Route path="/invoices/:invoiceId" component={Cards} />
+              <Route path="/invoices/list" component={Invoices} />
+              <Route exact path="/invoices/:invoiceId" component={Cards} />
               <Redirect exact from="/" to="/login" />
             </Switch>
           </Router>
