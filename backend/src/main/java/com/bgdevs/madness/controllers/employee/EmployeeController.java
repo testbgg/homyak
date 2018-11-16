@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import static java.net.URI.create;
 
 /**
  * @author Nikita Shaldenkov
@@ -40,8 +40,8 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEmployee(@Valid @RequestBody CreateEmployeeModel employee) throws URISyntaxException {
+    public ResponseEntity<?> createEmployee(@Valid @RequestBody CreateEmployeeModel employee) {
         EmployeeModel createdEmployee = this.employeeService.create(employee);
-        return ResponseEntity.created(new URI("/employees/" + createdEmployee.getId())).body(createdEmployee);
+        return ResponseEntity.created(create("/employees/" + createdEmployee.getId())).body(createdEmployee);
     }
 }

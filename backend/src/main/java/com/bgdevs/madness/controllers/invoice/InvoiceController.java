@@ -24,8 +24,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{invoiceId}")
-    public ResponseEntity<?> findOne(@PathVariable long invoiceId,
-                                     @RequestParam long ownerId) {
-        return ResponseEntity.ok(this.invoiceService.findOne(invoiceId, ownerId));
+    public ResponseEntity<?> findOne(@PathVariable long invoiceId) {
+        return ResponseEntity.ok(this.invoiceService.findOne(invoiceId));
     }
 }
