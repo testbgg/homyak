@@ -19,7 +19,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class EmployeeInfo extends BaseEntity {
+public class Employee extends BaseEntity {
 
     private String firstName;
 
@@ -29,7 +29,7 @@ public class EmployeeInfo extends BaseEntity {
 
     private String passportNumber;
 
-    @OneToMany(mappedBy = "employeeInfo", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Card> cards;
 
 }
