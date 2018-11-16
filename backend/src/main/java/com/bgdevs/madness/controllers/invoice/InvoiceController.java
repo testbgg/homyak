@@ -29,9 +29,8 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public ResponseEntity<?> findAll(@PageableDefault Pageable pageable,
-                                     @RequestParam long ownerId) {
-        return ResponseEntity.ok(this.invoiceService.findAll(pageable, ownerId));
+    public ResponseEntity<Object> findAll(@RequestParam long ownerId) {
+        return ResponseEntity.ok(this.invoiceService.findAll(ownerId));
     }
 
     @GetMapping("/{invoiceId}")

@@ -6,11 +6,12 @@ import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CardModelMapper;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Nikita Shaldenkov
@@ -32,8 +33,9 @@ public class CardService {
         return null;
     }
 
-    public Page<CardModel> findByInvoiceId(long invoiceId, Pageable pageable) {
-        return this.cardRepository.findByInvoiceId(invoiceId, pageable)
-                .map(CardModelMapper::toModel);
+    public List<CardModel> findByInvoiceId(long invoiceId) {
+        return this.cardRepository.findByInvoiceId(invoiceId).stream()
+                .map(CardModelMapper::toModel)
+                .collect(toList());
     }
 }

@@ -31,11 +31,11 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    public Page<InvoiceModel> findAll(Pageable pageable, long ownerId) {
-        return this.invoiceRepository.findAllByOwnerId(ownerId, pageable)
-                .map(InvoiceModelMapper::toModel);
+    public List<InvoiceModel> findAll(long ownerId) {
+        return this.invoiceRepository.findAllByOwnerId(ownerId).stream()
+                .map(InvoiceModelMapper::toModel)
+                .collect(Collectors.toList());
     }
-
 
     public InvoiceModel findOne(long invoiceId) {
         return this.invoiceRepository.findById(invoiceId)
