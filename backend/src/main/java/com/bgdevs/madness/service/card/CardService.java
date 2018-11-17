@@ -44,6 +44,8 @@ public class CardService {
                 .orElseThrow(() -> new ElementNotFoundException("Unable to find employee with id: " + model.getOwnerId()));
         Invoice invoice = this.invoiceRepository.findById(model.getInvoiceId())
                 .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + model.getInvoiceId()));
+        if (!invoice.isCard())
+            throw new Error();
         Card saved = this.cardRepository.save(buildCard(model, employee, invoice));
         return toModel(saved);
     }
