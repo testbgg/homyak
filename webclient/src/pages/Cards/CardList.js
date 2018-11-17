@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
 import { Table } from "antd";
 
 const columns = [
   {
     title: "Name",
-    dataIndex: "name"  },
+    dataIndex: "name",
+    render: text => <a href="javascript:;">{text}</a>
+  },
   {
     title: "Age",
     dataIndex: "age"
@@ -56,9 +58,8 @@ const rowSelection = {
     })
   };
 
-export default function CashinOutCard({}) {
+export default function CardList({}) {
   return (
     <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
   );
 }
-

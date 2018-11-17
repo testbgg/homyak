@@ -114,13 +114,11 @@ export default class Invoices extends Component {
               confirmLoading={confirmLoading}
               onCancel={this.handleCancel}
             >
-              <p>
-                <Table
-                  rowSelection={rowSelection}
-                  columns={columns}
-                  dataSource={data}
-                />
-              </p>
+              <Table
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={data}
+              />
             </Modal>
           </div>
           <div className="invoices__list">
