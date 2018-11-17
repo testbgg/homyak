@@ -37,7 +37,6 @@ public class CardService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-
     @Nonnull
     @Transactional
     public CardModel requestCard(@Nonnull CreateCardModel model) {
@@ -52,17 +51,6 @@ public class CardService {
             throw new Error();
         Card saved = this.cardRepository.save(buildCard(model, employee, invoice));
         return toModel(saved);
-    }
-
-    private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
-        CardType type = CardType.of(cardToBeCreated.getType());
-        if (type == null) {
-            throw new IllegalStateException("Invalid card type: " + type);
-        }
-        Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
-        card.setMonthLimit(cardToBeCreated.getMonthLimit());
-        card.setDayLimit(cardToBeCreated.getDayLimit());
-        return card;
     }
 
     @Transactional
@@ -125,12 +113,15 @@ public class CardService {
         private BigDecimal monthLimit;
     }
 
-    private Card buildCard(@Nonnull CreateCardModel model, @Nullable Employee employee, @Nonnull Invoice invoice) {
-        CardType type = CardType.of(model.getType());
+    private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
+        CardType type = CardType.of(cardToBeCreated.getType());
         if (type == null) {
             throw new IllegalStateException("Invalid card type: " + type);
         }
-        return Card.request(UUID.randomUUID().toString(), type, employee, invoice);
+        Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
+        card.setMonthLimit(cardToBeCreated.getMonthLimit());
+        card.setDayLimit(cardToBeCreated.getDayLimit());
+        return card;
     }
 
 }
