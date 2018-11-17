@@ -26,6 +26,10 @@ export default class Invoices extends Component {
   };
 
   async componentDidMount() {
+    this.fetchInvoices.call(this);
+  }
+
+  async fetchInvoices() {
     const { data: invoices } = await axios.get("/api/invoices");
     this.setState({ invoices });
   }
@@ -40,25 +44,44 @@ export default class Invoices extends Component {
     this.setState({ newInvoiceTypeCurrency: value });
   };
 
-  handleOk = state => {
+  handleCreateInvoice = modalVisible => {
+    const { newInvoiceTypeCurrency } = this.state;
     this.setState({
       confirmLoading: true
     });
-    setTimeout(() => {
-      this.setState({
-        [state]: false,
-        confirmLoading: false
+    axios
+      .post("/api/invoices", {
+        currencyType: newInvoiceTypeCurrency
+      })
+      .then(() => {
+        this.setState(
+          {
+            [modalVisible]: false,
+            confirmLoading: false
+          },
+          () => this.fetchInvoices.call(this)
+        );
       });
-    }, 2000);
   };
 
-  handleCarded = state => {
+  handleCarded = modalVisible => {
+    const { selectedInvoicesWithoutCard } = this.state;
     this.setState({
       confirmLoading: true
     });
-    axios.post("/api/invoices/mark-as-carded", {
-      ids: this.state.selectedInvoicesWithoutCard
-    });
+    axios
+      .post("/api/invoices/mark-as-carded", {
+        ids: selectedInvoicesWithoutCard
+      })
+      .then(() => {
+        this.setState(
+          {
+            [modalVisible]: false,
+            confirmLoading: false
+          },
+          () => this.fetchInvoices.call(this)
+        );
+      });
   };
 
   handleCancel = state => {
@@ -69,7 +92,7 @@ export default class Invoices extends Component {
   };
 
   selectRow = rows => {
-    this.setState({ selectedInvoicesWithoutCard: rows.map(row => row.id) });
+    this.setState({ selectedInvoicesWithoutCard: rows });
   };
 
   render() {
@@ -80,7 +103,7 @@ export default class Invoices extends Component {
       confirmLoading
     } = this.state;
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => this.selectRow(selectedRows),
+      onChange: (selectedRowKeys) => this.selectRow(selectedRowKeys),
       getCheckboxProps: record => ({
         disabled: record.name === "Disabled User", // Column configuration not to be checked
         name: record.name
@@ -91,7 +114,7 @@ export default class Invoices extends Component {
     return (
       <div>
         <header>
-          <h1>Корпоративные карты</h1>
+          <h1>Расчетные Л/C</h1>
         </header>
         <section>
           <div className="invoices__to-card-invoice">
@@ -111,13 +134,16 @@ export default class Invoices extends Component {
               <Table
                 rowSelection={rowSelection}
                 columns={columns}
-                dataSource={invoicesWithoutCarded}
+                dataSource={invoicesWithoutCarded.map(invoice => ({
+                  ...invoice,
+                  key: invoice.id
+                }))}
               />
             </Modal>
             <Modal
               title="Создать счет"
               visible={visibleCreateInvoice}
-              onOk={() => this.handleOk("visibleCreateInvoice")}
+              onOk={() => this.handleCreateInvoice("visibleCreateInvoice")}
               confirmLoading={confirmLoading}
               onCancel={() => this.handleCancel("visibleCreateInvoice")}
             >
@@ -126,33 +152,37 @@ export default class Invoices extends Component {
                 style={{ width: 220 }}
                 onChange={this.handleChange}
               >
-                <Option value="local">LOCAL</Option>
-                <Option value="foreign">FOREIGN</Option>
+                <Option value="LOCAL">LOCAL</Option>
+                <Option value="FOREIGN">FOREIGN</Option>
               </Select>
             </Modal>
           </div>
           {!_isEmpty(invoicesCarded) && (
             <div className="row invoices__list">
-              {invoicesCarded.map(({ id, number, cash, currencyType, cards }) => (
-                <div className="col-xs-12 col-sm-4" key={id}>
-                  <Link to={{ pathname: `/invoices/${id}`, state: { cards } }}>
-                    <div className="invoices__invoice" key={id}>
-                      <div className="invoices__invoice-number">
-                        Л/C № {number}
+              {invoicesCarded.map(
+                ({ id, number, cash, currencyType, cards }) => (
+                  <div className="col-xs-12 col-sm-4" key={id}>
+                    <Link
+                      to={{ pathname: `/invoices/${id}`, state: { cards } }}
+                    >
+                      <div className="invoices__invoice" key={id}>
+                        <div className="invoices__invoice-number">
+                          Л/C № {number}
+                        </div>
+                        <div className="invoices__invoice-cash">
+                          На счету: {cash}
+                        </div>
+                        <div className="invoices__invoice-cash">
+                          Тип валюты: {currencyType}
+                        </div>
+                        <div className="invoices__invoice-cash">
+                          Карт привязано: {cards.length}
+                        </div>
                       </div>
-                      <div className="invoices__invoice-cash">
-                        На счету: {cash}
-                      </div>
-                      <div className="invoices__invoice-cash">
-                        Тип валюты: {currencyType}
-                      </div>
-                      <div className="invoices__invoice-cash">
-                        Карт привязано: {cards.length}
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </div>
+                )
+              )}
             </div>
           )}
         </section>

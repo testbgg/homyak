@@ -41,21 +41,23 @@ export default class CashinOutCard extends Component {
   };
 
   handleOk = () => {
-    const { invoiceId } = this.props;
+    const { invoiceId, fetchCards } = this.props;
     this.setState({
       confirmLoading: true
     });
-    axios.post("/api/cards", {
-      type: "Cash in/out",
-      invoiceId: Number(invoiceId),
-      employeeId: null
-    });
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false
+    axios
+      .post("/api/cards", {
+        type: "Cash in/out",
+        invoiceId: Number(invoiceId),
+        employeeId: null
+      })
+      .then(() => {
+        fetchCards();
+        this.setState({
+          visible: false,
+          confirmLoading: false
+        });
       });
-    }, 2000);
   };
 
   handleCancel = () => {

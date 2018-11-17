@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Table, Button, Icon, Modal } from "antd";
+import axios from "axios";
 
 const columns = [
   {
@@ -40,15 +41,25 @@ export default class CreditCard extends Component {
   };
 
   handleOk = () => {
+    const { invoiceId, fetchCards } = this.props;
     this.setState({
       confirmLoading: true
     });
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false
+    axios
+      .post("/api/cards", {
+        type: "Credit",
+        invoiceId: Number(invoiceId),
+        employeeId: null
+      })
+      .then(() => {
+        this.setState(
+          {
+            visible: false,
+            confirmLoading: false
+          },
+          () => fetchCards()
+        );
       });
-    }, 2000);
   };
 
   handleCancel = () => {
