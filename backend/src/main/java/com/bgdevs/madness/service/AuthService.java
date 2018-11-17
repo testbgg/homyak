@@ -27,7 +27,7 @@ public class AuthService implements UserDetailsService {
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
-            return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
+            return new org.springframework.security.core.userdetails.User(String.valueOf(user.get().getId()), user.get().getPassword(),
                     Collections.singletonList(new SimpleGrantedAuthority("USER")));
         }
     }

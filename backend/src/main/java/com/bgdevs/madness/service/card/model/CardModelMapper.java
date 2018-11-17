@@ -9,6 +9,7 @@ import com.bgdevs.madness.service.card.model.CardModel.CardLimitModel;
 import com.bgdevs.madness.service.card.model.CardModel.CardOwnerModel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Nikita Shaldenkov
@@ -33,9 +34,9 @@ public class CardModelMapper {
         return new CardInvoiceModel(invoice.getOwnerId(), invoice.getNumber(), invoice.getCurrencyType());
     }
 
-    @Nonnull
-    private static CardLimitModel toLimitModel(@Nonnull Limit limit) {
-        return new CardLimitModel(limit.getMoneyLimit(), limit.getRefreshIn());
+    @Nullable
+    private static CardLimitModel toLimitModel(@Nullable Limit limit) {
+        return limit == null ? null : new CardLimitModel(limit.getMoneyLimit(), limit.getRefreshIn());
     }
 
 }

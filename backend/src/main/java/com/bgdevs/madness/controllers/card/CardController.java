@@ -5,8 +5,6 @@ import com.bgdevs.madness.service.card.CardService;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +36,14 @@ public class CardController {
     public ResponseEntity<Object> createCard(@Valid @RequestBody CreateCardModel createCardModel) {
         CardModel cardModel = this.cardService.create(createCardModel);
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
+    }
+
+    @PutMapping("/{cardId}")
+    public ResponseEntity<Object> addLimitToCard(@PathVariable Long cardId,
+                                                 @RequestBody @Valid LimitModel limit) {
+        this.cardService.addLimitToCard(cardId, limit);
+        return ResponseEntity.ok().build();
+
     }
 
 }

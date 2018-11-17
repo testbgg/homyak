@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Nonnull;
@@ -41,7 +40,7 @@ public class FillDataController {
     private CardService cardService;
 
     @PostMapping
-    public ResponseEntity<Object> fillDatabase(@RequestParam long ownerId) {
+    public ResponseEntity<Object> fillDatabase(@Nonnull Long ownerId) {
         fillData(ownerId);
         return ResponseEntity.ok("Database successfully filled.");
     }
@@ -50,8 +49,8 @@ public class FillDataController {
         InvoiceModel localInvoice = createInvoice(ownerId, LOCAL);
         InvoiceModel foreignInvoice = createInvoice(ownerId, FOREIGN);
         EmployeeModel employeeModel = createEmployee();
-        CardModel localCard = createCard(ownerId, localInvoice.getId());
-        CardModel foreignCard = createCard(ownerId, foreignInvoice.getId());
+        CardModel localCard = createCard(employeeModel.getId(), localInvoice.getId());
+        CardModel foreignCard = createCard(employeeModel.getId(), foreignInvoice.getId());
     }
 
     private InvoiceModel createInvoice(long ownerId, @Nonnull CurrencyType type) {

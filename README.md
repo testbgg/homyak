@@ -12,3 +12,8 @@ gradle asm
 
 user: admin
 password: 123
+
+
+
+## add entities to db
+POST request /fill-db

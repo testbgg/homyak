@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nonnull;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -29,7 +30,7 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> findAll(@RequestParam long ownerId) {
+    public ResponseEntity<Object> findAll(@Nonnull Long ownerId) {
         return ResponseEntity.ok(this.invoiceService.findAll(ownerId));
     }
 

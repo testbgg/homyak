@@ -13,14 +13,15 @@ import com.bgdevs.madness.service.invoice.model.InvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.bgdevs.madness.service.invoice.model.InvoiceModelMapper.toModel;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Nikita Shaldenkov
@@ -31,26 +32,39 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    @Nonnull
+    private static List<CardModel> convertCards(@Nonnull List<Card> cards) {
+        return cards.stream()
+                .map(CardModelMapper::toModel)
+                .collect(toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<InvoiceModel> findAll(long ownerId) {
         return this.invoiceRepository.findAllByOwnerId(ownerId).stream()
                 .map(InvoiceModelMapper::toModel)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public InvoiceModel findOne(long invoiceId) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(InvoiceModelMapper::toModel)
                 .orElseThrow(() -> new ElementNotFoundException(invoiceId));
     }
 
+    @Transactional(readOnly = true)
     public List<CardModel> findCardsByType(long invoiceId, @Nonnull CardType type) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(Invoice::getCards)
-                .map(InvoiceService::convertCards)
-                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + invoiceId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + invoiceId))
+                .stream()
+                .filter(card -> card.getType().equals(type))
+                .map(CardModelMapper::toModel)
+                .collect(toList());
     }
 
-    //todo add unique number check
+    @Transactional
     public InvoiceModel create(CreateInvoiceModel invoice) {
         Invoice created = this.invoiceRepository.save(toEntity(invoice));
         return toModel(created);
@@ -64,20 +78,11 @@ public class InvoiceService {
                 CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 
+    @Transactional
     public void markAsCard(long invoiceId) {
         this.invoiceRepository.findById(invoiceId)
-                .map(i -> {
-                    i.setCard(true);
-                    return i;
-                })
-                .orElseThrow(() -> new ElementNotFoundException(invoiceId));
-    }
-
-    @Nonnull
-    private static List<CardModel> convertCards(@Nonnull List<Card> cards) {
-        return cards.stream()
-                .map(CardModelMapper::toModel)
-                .collect(Collectors.toList());
+                .orElseThrow(() -> new ElementNotFoundException(invoiceId))
+                .setCard(true);
     }
 
 }
