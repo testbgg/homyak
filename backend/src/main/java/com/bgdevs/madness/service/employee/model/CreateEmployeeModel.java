@@ -1,6 +1,6 @@
 package com.bgdevs.madness.service.employee.model;
 
-import lombok.Data;
+import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 /**
  * @author Nikita Shaldenkov
  */
-@Data
+@Value
 public class CreateEmployeeModel {
 
     @NotNull

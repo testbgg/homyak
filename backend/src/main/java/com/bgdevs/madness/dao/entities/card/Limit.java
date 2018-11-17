@@ -23,7 +23,7 @@ public class Limit extends BaseEntity {
     @OneToOne
     private Card card;
 
-    private int moneyLimit;
+    private long moneyLimit;
 
     private LocalDateTime refreshIn;
 }

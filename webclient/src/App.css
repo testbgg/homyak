@@ -6,11 +6,21 @@
 
 .App-background-top {
   background-color: crimson;
-  height: 50vh;
+  height: 45vh;
+}
+
+.App-background-bottom {
+  background-color: black;
+  height: 40vh;
+  padding: 10px;
 }
 
 .App-background-bottom {
   background-color: black;
   height: 50vh;
   padding: 10px;
+}
+.ant-form {
+  background-color: black;
+  padding: 8px 0 0 12px;
 }

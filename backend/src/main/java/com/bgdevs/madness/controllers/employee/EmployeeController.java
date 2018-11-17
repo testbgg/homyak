@@ -4,8 +4,6 @@ import com.bgdevs.madness.service.employee.EmployeeService;
 import com.bgdevs.madness.service.employee.model.CreateEmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +23,8 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public ResponseEntity<?> getEmployees(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(this.employeeService.findAll(pageable));
+    public ResponseEntity<?> getEmployees() {
+        return ResponseEntity.ok(this.employeeService.findAll());
     }
 
     @GetMapping("/{id}")

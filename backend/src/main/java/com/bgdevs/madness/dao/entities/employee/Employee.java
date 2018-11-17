@@ -26,7 +26,7 @@ public class Employee extends BaseEntity {
     private String firstName;
 
     @NotNull
-    private String secondName;
+    private String lastName;
 
     @NotNull
     private LocalDate birthdayDate;

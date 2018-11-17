@@ -7,11 +7,12 @@ import com.bgdevs.madness.service.employee.model.EmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModelMapper;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.bgdevs.madness.service.employee.model.EmployeeModelMapper.toModel;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Nikita Shaldenkov
@@ -33,11 +34,10 @@ public class EmployeeService {
                 .orElseThrow(() -> new ElementNotFoundException(id));
     }
 
-
     private Employee toEntity(CreateEmployeeModel employee) {
         return Employee.builder()
                 .firstName(employee.getFirstName())
-                .secondName(employee.getSecondName())
+                .lastName(employee.getSecondName())
                 .birthdayDate(employee.getBirthdayDate())
                 .passportNumber(employee.getPassportNumber())
                 .build();
@@ -51,8 +51,9 @@ public class EmployeeService {
         return employeeModel;
     }
 
-    public Page<EmployeeModel> findAll(Pageable pageable) {
-        return this.employeeRepository.findAll(pageable)
-                .map(EmployeeModelMapper::toModel);
+    public List<EmployeeModel> findAll() {
+        return this.employeeRepository.findAll().stream()
+                .map(EmployeeModelMapper::toModel)
+                .collect(toList());
     }
 }

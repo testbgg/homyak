@@ -5,6 +5,5 @@ package com.bgdevs.madness.dao.entities.invoice;
  */
 public enum CurrencyType {
     FOREIGN,
-    LOCAL,
-    MULTY
+    LOCAL
 }
