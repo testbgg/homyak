@@ -22,7 +22,7 @@ public class OwnerIdArgumentInjector implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 //        TODO revert
 //        return Long.valueOf(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
-        return 1488;
+        return 1L;
     }
 }
 
