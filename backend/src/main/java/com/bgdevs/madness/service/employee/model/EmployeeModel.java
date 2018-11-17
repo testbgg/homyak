@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class EmployeeModel {
 
-    private Long id;
+    private long id;
 
     private String firstName;
 

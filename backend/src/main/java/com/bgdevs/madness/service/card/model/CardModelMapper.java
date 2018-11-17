@@ -21,12 +21,13 @@ public class CardModelMapper {
 
         return new CardModel(card.getId(), card.getNumber(), card.getType(),
                 toOwnerModel(card.getOwner()), toInvoiceModel(card.getInvoice()),
+                card.getOpenedDate(), card.getClosedDate(),
                 toLimitModel(card.getDayLimit()), toLimitModel(card.getMonthLimit()));
     }
 
-    @Nonnull
-    private static CardOwnerModel toOwnerModel(@Nonnull Employee employee) {
-        return new CardOwnerModel(employee.getId(), employee.getFirstName(), employee.getLastName());
+    @Nullable
+    private static CardOwnerModel toOwnerModel(@Nullable Employee employee) {
+        return employee == null ? null : new CardOwnerModel(employee.getId(), employee.getFirstName(), employee.getLastName());
     }
 
     @Nonnull

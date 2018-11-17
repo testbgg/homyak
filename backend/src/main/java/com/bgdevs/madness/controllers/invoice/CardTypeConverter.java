@@ -16,7 +16,7 @@ public class CardTypeConverter extends PropertyEditorSupport {
             }
             setValue(type);
         } else {
-            throw new IllegalArgumentException("Incorrect card type: " + text);
+            setValue(null);
         }
     }
 

@@ -1,6 +1,18 @@
 
 
 
-task asm(dependsOn: ['webclient:copySpaToJar', 'backend:build']) {
+task buildFrontend(dependsOn: 'webclient:copySpaToJar') {
     // empty
 }
+
+task buildBackend(dependsOn: 'backend:build') {
+    // empty
+}
+
+task asm {
+    // empty
+}
+
+buildBackend.dependsOn buildFrontend
+
+asm.dependsOn buildBackend

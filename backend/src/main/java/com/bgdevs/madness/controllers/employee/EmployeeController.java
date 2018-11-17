@@ -15,7 +15,7 @@ import static java.net.URI.create;
  * @author Nikita Shaldenkov
  */
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("api/employees")
 public class EmployeeController {
 
 

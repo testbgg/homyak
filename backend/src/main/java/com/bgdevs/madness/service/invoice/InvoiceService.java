@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static com.bgdevs.madness.service.invoice.model.InvoiceModelMapper.toModel;
 import static java.util.stream.Collectors.toList;
@@ -54,14 +56,18 @@ public class InvoiceService {
     }
 
     @Transactional(readOnly = true)
-    public List<CardModel> findCardsByType(long invoiceId, @Nonnull CardType type) {
+    public List<CardModel> findCardsByType(long invoiceId, @Nullable CardType type) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(Invoice::getCards)
                 .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + invoiceId))
                 .stream()
-                .filter(card -> card.getType().equals(type))
+                .filter(filterByType(type))
                 .map(CardModelMapper::toModel)
                 .collect(toList());
+    }
+
+    private Predicate<Card> filterByType(@Nullable CardType type) {
+        return (type == null) ? card -> true : card -> card.getType().equals(type);
     }
 
     @Transactional
@@ -79,10 +85,13 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void markAsCard(long invoiceId) {
-        this.invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new ElementNotFoundException(invoiceId))
-                .setCard(true);
+    public void markAsCard(List<Long> invoiceIds) {
+        invoiceIds.forEach(id -> {
+            Invoice invoice = this.invoiceRepository.findById(id)
+                    .orElseThrow(() -> new ElementNotFoundException(id));
+            invoice.setCard(true);
+            this.invoiceRepository.save(invoice);
+        });
     }
 
 }
