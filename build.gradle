@@ -4,5 +4,3 @@
 task asm(dependsOn: ['webclient:copySpaToJar', 'backend:build']) {
     // empty
 }
-
-tasks.build.dependsOn asm
