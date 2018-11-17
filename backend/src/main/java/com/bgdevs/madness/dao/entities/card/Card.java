@@ -52,8 +52,7 @@ public class Card extends BaseEntity {
     private Invoice invoice;
 
     @Nullable
-    private BigDecimal
-            dayLimit;
+    private BigDecimal dayLimit;
 
     @Nullable
     private BigDecimal monthLimit;
@@ -69,6 +68,13 @@ public class Card extends BaseEntity {
     public static Card request(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                                @Nonnull Invoice invoice) {
         return new Card(number, type, employee, invoice);
+    }
+
+    public void updateLimits(@Nullable BigDecimal dayLimit, @Nullable BigDecimal monthLimit) {
+        if (this.state != CLOSED) {
+            setDayLimit(dayLimit);
+            setMonthLimit(monthLimit);
+        }
     }
 
     public void activate() {

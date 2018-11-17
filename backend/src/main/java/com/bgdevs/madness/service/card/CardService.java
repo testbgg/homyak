@@ -56,14 +56,8 @@ public class CardService {
     @Transactional
     public void addLimitToCard(@Nonnull Long cardId, AddLimitsModel addLimitsModel) {
         Card card = this.cardRepository.findById(cardId)
-                .map(c -> {
-                    if (addLimitsModel.dayLimit != null)
-                        c.setDayLimit(addLimitsModel.dayLimit);
-                    if (addLimitsModel.monthLimit != null)
-                        c.setMonthLimit(addLimitsModel.monthLimit);
-                    return c;
-                })
                 .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
         this.cardRepository.save(card);
     }
 
@@ -98,6 +92,7 @@ public class CardService {
         oldCard.close();
         this.cardRepository.save(oldCard);
         Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
+        newCard.updateLimits(oldCard.getDayLimit(), oldCard.getMonthLimit());
         this.cardRepository.save(newCard);
         return toModel(newCard);
     }
@@ -119,8 +114,7 @@ public class CardService {
             throw new IllegalStateException("Invalid card type: " + type);
         }
         Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
-        card.setMonthLimit(cardToBeCreated.getMonthLimit());
-        card.setDayLimit(cardToBeCreated.getDayLimit());
+        card.updateLimits(cardToBeCreated.getDayLimit(), cardToBeCreated.getMonthLimit());
         return card;
     }
 
