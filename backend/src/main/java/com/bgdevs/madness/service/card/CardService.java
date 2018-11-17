@@ -1,6 +1,5 @@
 package com.bgdevs.madness.service.card;
 
-import com.bgdevs.madness.controllers.card.LimitModel;
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.entities.employee.Employee;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
@@ -70,9 +70,9 @@ public class CardService {
         Card card = this.cardRepository.findById(cardId)
                 .map(c -> {
                     if (addLimitsModel.dayLimit != null)
-                        c.setDayLimit(addLimitsModel.dayLimit.getMoneyLimit());
+                        c.setDayLimit(addLimitsModel.dayLimit);
                     if (addLimitsModel.monthLimit != null)
-                        c.setMonthLimit(addLimitsModel.monthLimit.getMoneyLimit());
+                        c.setMonthLimit(addLimitsModel.monthLimit);
                     return c;
                 })
                 .orElseThrow(() -> new ElementNotFoundException(cardId));
@@ -119,10 +119,10 @@ public class CardService {
     public static class AddLimitsModel {
 
         @Nullable
-        private LimitModel dayLimit;
+        private BigDecimal dayLimit;
 
         @Nullable
-        private LimitModel monthLimit;
+        private BigDecimal monthLimit;
     }
 
 }
