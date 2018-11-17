@@ -4,6 +4,7 @@ import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.service.card.CardService;
+import com.bgdevs.madness.service.card.CardService.AddLimitsModel;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +54,9 @@ public class CardController {
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
 
-    @PutMapping("/{cardId}")
-    public ResponseEntity<Object> addLimitToCard(@PathVariable Long cardId,
-                                                 @RequestBody CardService.AddLimitsModel addLimitsModel) {
-        this.cardService.addLimitToCard(cardId, addLimitsModel);
+    @PutMapping("/limits")
+    public ResponseEntity<Object> addLimitsToCards(@RequestBody AddLimitsModel addLimitsModel) {
+        this.cardService.addLimitToCard(addLimitsModel);
         return ResponseEntity.ok().build();
     }
 

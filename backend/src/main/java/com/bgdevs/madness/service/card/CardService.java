@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
@@ -54,11 +56,13 @@ public class CardService {
     }
 
     @Transactional
-    public void addLimitToCard(@Nonnull Long cardId, AddLimitsModel addLimitsModel) {
-        Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
-        card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
-        this.cardRepository.save(card);
+    public void addLimitToCard(@Nonnull AddLimitsModel addLimitsModel) {
+        addLimitsModel.ids.forEach(cardId -> {
+            Card card = this.cardRepository.findById(cardId)
+                    .orElseThrow(() -> new ElementNotFoundException(cardId));
+            card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
+            this.cardRepository.save(card);
+        });
     }
 
     @Transactional
@@ -105,16 +109,6 @@ public class CardService {
         this.cardRepository.save(card);
     }
 
-    @Data
-    public static class AddLimitsModel {
-
-        @Nullable
-        private BigDecimal dayLimit;
-
-        @Nullable
-        private BigDecimal monthLimit;
-    }
-
     private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
         CardType type = CardType.of(cardToBeCreated.getType());
         if (type == null) {
@@ -123,6 +117,19 @@ public class CardService {
         Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
         card.updateLimits(cardToBeCreated.getDayLimit(), cardToBeCreated.getMonthLimit());
         return card;
+    }
+
+    @Data
+    public static class AddLimitsModel {
+
+        @NotNull
+        private List<Long> ids;
+
+        @Nullable
+        private BigDecimal dayLimit;
+
+        @Nullable
+        private BigDecimal monthLimit;
     }
 
 }
