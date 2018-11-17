@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import { Button, Icon, Modal, Table } from "antd";
 import "./Invoices.sass";
 
@@ -69,6 +70,12 @@ export default class Invoices extends Component {
     visible: false,
     confirmLoading: false
   };
+
+  async componentDidMount() {
+    await axios.post("/api/fill-db");
+    const { data }  = axios.get("/api/invoices");
+    console.log(data);
+  }
 
   showModal = () => {
     this.setState({
