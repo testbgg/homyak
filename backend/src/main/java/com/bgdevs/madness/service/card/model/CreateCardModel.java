@@ -1,6 +1,6 @@
 package com.bgdevs.madness.service.card.model;
 
-import lombok.Data;
+import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -8,7 +8,7 @@ import javax.validation.constraints.Pattern;
 /**
  * @author Nikita Shaldenkov
  */
-@Data
+@Value
 public class CreateCardModel {
 
     @NotNull

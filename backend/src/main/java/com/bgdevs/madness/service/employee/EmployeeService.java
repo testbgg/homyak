@@ -34,7 +34,6 @@ public class EmployeeService {
                 .orElseThrow(() -> new ElementNotFoundException(id));
     }
 
-
     private Employee toEntity(CreateEmployeeModel employee) {
         return Employee.builder()
                 .firstName(employee.getFirstName())
