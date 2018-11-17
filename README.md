@@ -1,17 +1,16 @@
 # Rosbank Tech.Madness
-[![Build Status](https://travis-ci.org/testbgg/homyak.svg?branch=master)](https://travis-ci.org/testbgg/homyak)
 
-## Команда 6
+##Команда 6
 
 
-## Credentials
+### Credentials
 
 user: admin
 password: 123
 
 
 
-## add entities to db
+### add entities to db
 POST request /fill-db
 
 
