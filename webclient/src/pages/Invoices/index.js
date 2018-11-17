@@ -113,28 +113,6 @@ export default class Invoices extends Component {
     const invoicesWithoutCarded = invoices.filter(invoice => !invoice.card);
     return (
       <div>
-        <header>
-          <div className="invoices__header-top">
-            <Link to="/invoices/list">
-              <div className="invoices__logo" />
-            </Link>
-            <div>Patient login</div>
-          </div>
-          <nav className="invoices__navigation">
-            <span className="invoices__navigation-item">Главная</span>
-            <span className="invoices__navigation-item">Выписки</span>
-            <span className="invoices__navigation-item">Платежи</span>
-            <span className="invoices__navigation-item invoices__navigation-item--with-pseudo">
-              Валюта
-            </span>
-            <span className="invoices__navigation-item invoices__navigation-item--selected">
-              Карты
-            </span>
-            <span className="invoices__navigation-item">Кредиты</span>
-            <span className="invoices__navigation-item">Депозиты</span>
-            <span className="invoices__navigation-item">Сообщения</span>
-          </nav>
-        </header>
         <div>
           <h1>Расчетные Л/C</h1>
         </div>
