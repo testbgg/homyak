@@ -97,6 +97,13 @@ public class CardService {
         return toModel(newCard);
     }
 
+    @Transactional
+    public void withdrawMoney(@Nonnull Long cardId, BigDecimal amount) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.tryWithdrawMoney(amount);
+        this.cardRepository.save(card);
+    }
 
     @Data
     public static class AddLimitsModel {
