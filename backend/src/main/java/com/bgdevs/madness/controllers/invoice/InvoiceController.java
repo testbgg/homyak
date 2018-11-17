@@ -40,8 +40,9 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel) {
-        InvoiceModel invoiceModel = this.invoiceService.create(createInvoiceModel);
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel,
+                                         Long ownerId) {
+        InvoiceModel invoiceModel = this.invoiceService.create(createInvoiceModel, ownerId);
         return ResponseEntity.created(URI.create("/invoices/" + invoiceModel.getId())).body(invoiceModel);
     }
 

@@ -65,14 +65,14 @@ public class InvoiceService {
     }
 
     @Transactional
-    public InvoiceModel create(CreateInvoiceModel invoice) {
-        Invoice created = this.invoiceRepository.save(toEntity(invoice));
+    public InvoiceModel create(CreateInvoiceModel invoice, Long ownerId) {
+        Invoice created = this.invoiceRepository.save(toEntity(invoice, ownerId));
         return toModel(created);
     }
 
-    private Invoice toEntity(CreateInvoiceModel invoice) {
+    private Invoice toEntity(CreateInvoiceModel invoice, Long ownerId) {
 
-        return new Invoice(invoice.getOwnerId(),
+        return new Invoice(ownerId,
                 UUID.randomUUID().toString(),
                 BigDecimal.ZERO,
                 CurrencyType.valueOf(invoice.getCurrencyType()));

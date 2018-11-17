@@ -11,9 +11,6 @@ import javax.validation.constraints.NotNull;
 public class CreateInvoiceModel {
 
     @NotNull
-    private Long ownerId;
-
-    @NotNull
     private String currencyType;
 
 }
