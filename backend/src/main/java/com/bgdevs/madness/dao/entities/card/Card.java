@@ -1,6 +1,7 @@
 package com.bgdevs.madness.dao.entities.card;
 
 import com.bgdevs.madness.dao.entities.BaseEntity;
+import com.bgdevs.madness.dao.entities.card.operation.Operation;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
 import com.bgdevs.madness.dao.exceptions.CardIsBlockedException;
@@ -17,6 +18,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.bgdevs.madness.dao.entities.card.CardState.*;
 
@@ -61,6 +64,9 @@ public class Card extends BaseEntity {
     @Nullable
     private BigDecimal monthLimit;
 
+    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER)
+    private List<Operation> operations = new ArrayList<>();
+
     private Card(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                  @Nonnull Invoice invoice) {
         this.number = number;
@@ -102,36 +108,55 @@ public class Card extends BaseEntity {
         }
     }
 
-    public boolean dayLimitExceeded() {
-        // TODO implement
-        return false;
-    }
-
-    public boolean monthLimitExceed() {
-        // TODO implement
-        return false;
-    }
-
-    public void tryWithdrawMoney(BigDecimal amount) {
+    public Operation executeCallOperation(@Nonnull BigDecimal cash, @Nonnull String description) {
         checkCardIsBlocked();
-
-        BigDecimal withdrawResult = this.invoice.getCash().subtract(amount);
+        BigDecimal withdrawResult = this.invoice.getCash().subtract(cash);
         if (withdrawResult.compareTo(BigDecimal.ZERO) < 0) {
             throw new NegativeMoneyAmountException();
-
         } else {
             checkLimits();
             this.invoice.setCash(withdrawResult);
         }
+        return Operation.executeCallOperation(cash, description, this);
+    }
+
+    public Operation executePutOperation(@Nonnull BigDecimal cash, @Nonnull String description) {
+        return Operation.executePutOperation(cash, description, this);
     }
 
     private void checkLimits() {
-        if (this.dayLimitExceeded()) {
+        if (dayLimitExceeded()) {
             throw new DayLimitExceededException();
         }
-        if (this.monthLimitExceed()) {
+        if (monthLimitExceed()) {
             throw new MonthLimitExceededException();
         }
+    }
+
+    private boolean dayLimitExceeded() {
+        if (this.dayLimit == null) {
+            return true;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
+        BigDecimal sum = this.operations.stream()
+                .filter(op -> op.getOperationDate().isAfter(startDate))
+                .map(op -> op.getType().calculateOperationSum(op.getCash()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum.compareTo(this.dayLimit) >= 0;
+    }
+
+    private boolean monthLimitExceed() {
+        if (this.monthLimit == null) {
+            return true;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0);
+        BigDecimal sum = this.operations.stream()
+                .filter(op -> op.getOperationDate().isAfter(startDate))
+                .map(op -> op.getType().calculateOperationSum(op.getCash()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum.compareTo(this.monthLimit) >= 0;
     }
 
     private void checkCardIsBlocked() {
