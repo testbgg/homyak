@@ -85,7 +85,6 @@ export default class Invoices extends Component {
   };
 
   handleCancel = state => {
-    console.log('Clicked cancel button');
     this.setState({
       [state]: false
     });

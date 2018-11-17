@@ -4,6 +4,11 @@ const TableColumns = [
     dataIndex: "number"
   },
   {
+    title: "Имя сотрудника",
+    dataIndex: "owner",
+    render: owner => owner ? `${owner.firstName} ${owner.secondName}` : 'Карта без владельца'
+  },
+  {
     title: "Дневной лимит",
     dataIndex: "dayLimit"
   },
