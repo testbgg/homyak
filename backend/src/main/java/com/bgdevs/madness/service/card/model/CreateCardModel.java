@@ -2,6 +2,7 @@ package com.bgdevs.madness.service.card.model;
 
 import lombok.Value;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -15,8 +16,8 @@ public class CreateCardModel {
     @Pattern(regexp = "Debit|Credit|Cash in/out")
     private String type;
 
-    @NotNull
-    private long ownerId;
+    @Nullable
+    private Long employeeId;
 
     @NotNull
     private long invoiceId;

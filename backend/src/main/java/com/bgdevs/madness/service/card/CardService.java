@@ -40,8 +40,11 @@ public class CardService {
     @Nonnull
     @Transactional
     public CardModel create(@Nonnull CreateCardModel model) {
-        Employee employee = this.employeeRepository.findById(model.getOwnerId())
-                .orElseThrow(() -> new ElementNotFoundException("Unable to find employee with id: " + model.getOwnerId()));
+        Employee employee = null;
+        if (model.getEmployeeId() != null) {
+            employee = this.employeeRepository.findById(model.getEmployeeId())
+                    .orElseThrow(() -> new ElementNotFoundException("Unable to find employee with id: " + model.getEmployeeId()));
+        }
         Invoice invoice = this.invoiceRepository.findById(model.getInvoiceId())
                 .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + model.getInvoiceId()));
         if (!invoice.isCard())

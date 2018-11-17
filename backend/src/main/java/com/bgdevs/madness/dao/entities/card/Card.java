@@ -34,7 +34,7 @@ public class Card extends BaseEntity {
     private CardStatus status = CardStatus.IN_PROGRESS;
 
     @ManyToOne
-    @NotNull
+    @Nullable
     private Employee owner;
 
     @ManyToOne
