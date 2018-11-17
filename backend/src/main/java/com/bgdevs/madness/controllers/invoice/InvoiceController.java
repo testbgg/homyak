@@ -48,7 +48,7 @@ public class InvoiceController {
 
     @GetMapping("/{invoiceId}/cards")
     public ResponseEntity<Object> getCardsByType(@PathVariable long invoiceId,
-                                                 @RequestParam CardType type) {
+                                                 @RequestParam(required = false, defaultValue = "") CardType type) {
         return ResponseEntity.ok(this.invoiceService.findCardsByType(invoiceId, type));
     }
 
@@ -60,7 +60,7 @@ public class InvoiceController {
 
 
     @Data
-    private class IdsWrapper {
+    public static class IdsWrapper {
         private List<Long> ids;
     }
 }
