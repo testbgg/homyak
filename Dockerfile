@@ -2,9 +2,9 @@ FROM openjdk:8-jre-alpine
 
 MAINTAINER bgdevs
 
-ADD backend/build/libs/backend-0.0.1.jar /app/
+ADD app.jar /app/
 WORKDIR /app
 
-CMD ["java", "-jar", "/app/backend-0.0.1.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
 
 EXPOSE 8080
