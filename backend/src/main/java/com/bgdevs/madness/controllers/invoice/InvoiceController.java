@@ -4,6 +4,7 @@ import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.service.invoice.InvoiceService;
 import com.bgdevs.madness.service.invoice.model.CreateInvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModel;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -52,9 +53,13 @@ public class InvoiceController {
     }
 
     @PostMapping("/mark-as-carded")
-    public ResponseEntity<Object> markInvoiceAsCard(@RequestParam("ids[]") List<Long> ids) {
-        this.invoiceService.markAsCard(ids);
+    public ResponseEntity<Object> markInvoiceAsCard(@RequestBody IdsWrapper ids) {
+        this.invoiceService.markAsCard(ids.getIds());
         return ResponseEntity.ok().build();
     }
 
+    @Data
+    private class IdsWrapper {
+        private List<Long> ids;
+    }
 }
