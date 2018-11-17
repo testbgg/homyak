@@ -60,7 +60,7 @@ public class InvoiceController {
 
 
     @Data
-    private class IdsWrapper {
+    public static class IdsWrapper {
         private List<Long> ids;
     }
 }
