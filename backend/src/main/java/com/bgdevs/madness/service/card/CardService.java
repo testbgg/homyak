@@ -2,11 +2,13 @@ package com.bgdevs.madness.service.card;
 
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
+import com.bgdevs.madness.dao.entities.card.operation.Operation;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.dao.repositories.InvoiceRepository;
+import com.bgdevs.madness.dao.repositories.OperationRepository;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
@@ -38,6 +40,9 @@ public class CardService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private OperationRepository operationRepository;
 
     @Nonnull
     @Transactional
@@ -102,11 +107,19 @@ public class CardService {
     }
 
     @Transactional
-    public void withdrawMoney(@Nonnull Long cardId, BigDecimal amount) {
+    public void executeCallOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
         Card card = this.cardRepository.findById(cardId)
                 .orElseThrow(() -> new ElementNotFoundException(cardId));
-        card.tryWithdrawMoney(amount);
-        this.cardRepository.save(card);
+        Operation operation = card.executeCallOperation(amount, description);
+        this.operationRepository.save(operation);
+    }
+
+    @Transactional
+    public void executePutOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        Operation operation = card.executePutOperation(amount, description);
+        this.operationRepository.save(operation);
     }
 
     private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
