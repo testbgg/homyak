@@ -39,7 +39,7 @@ public class CardService {
 
     @Nonnull
     @Transactional
-    public CardModel create(@Nonnull CreateCardModel model) {
+    public CardModel requestCard(@Nonnull CreateCardModel model) {
         Employee employee = null;
         if (model.getEmployeeId() != null) {
             employee = this.employeeRepository.findById(model.getEmployeeId())
