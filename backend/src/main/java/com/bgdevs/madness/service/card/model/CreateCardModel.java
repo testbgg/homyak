@@ -1,6 +1,6 @@
 package com.bgdevs.madness.service.card.model;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 /**
  * @author Nikita Shaldenkov
  */
-@Value
+@Data
 public class CreateCardModel {
 
     @NotNull

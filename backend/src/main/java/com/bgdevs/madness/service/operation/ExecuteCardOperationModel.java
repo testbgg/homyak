@@ -1,6 +1,6 @@
 package com.bgdevs.madness.service.operation;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * @author Valeriy Knyazhev <valeriy.knayzhev@yandex.ru>
  */
-@Value
+@Data
 public class ExecuteCardOperationModel {
 
     @NotNull

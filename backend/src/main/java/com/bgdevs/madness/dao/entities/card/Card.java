@@ -121,6 +121,9 @@ public class Card extends BaseEntity {
     }
 
     public Operation executePutOperation(@Nonnull BigDecimal cash, @Nonnull String description) {
+        checkCardIsBlocked();
+        BigDecimal withdrawResult = this.invoice.getCash().add(cash);
+        this.invoice.setCash(withdrawResult);
         return Operation.executePutOperation(cash, description, this);
     }
 
@@ -138,12 +141,12 @@ public class Card extends BaseEntity {
             return true;
         }
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), 0, 0);
+        LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
         BigDecimal sum = this.operations.stream()
                 .filter(op -> op.getOperationDate().isAfter(startDate))
                 .map(op -> op.getType().calculateOperationSum(op.getCash()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return sum.compareTo(this.dayLimit) >= 0;
+        return sum.compareTo(this.dayLimit.negate()) <= 0;
     }
 
     private boolean monthLimitExceed() {
@@ -156,7 +159,7 @@ public class Card extends BaseEntity {
                 .filter(op -> op.getOperationDate().isAfter(startDate))
                 .map(op -> op.getType().calculateOperationSum(op.getCash()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return sum.compareTo(this.monthLimit) >= 0;
+        return sum.compareTo(this.monthLimit.negate()) <= 0;
     }
 
     private void checkCardIsBlocked() {
