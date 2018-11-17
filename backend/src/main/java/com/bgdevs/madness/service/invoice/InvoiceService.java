@@ -47,7 +47,7 @@ public class InvoiceService {
         return this.invoiceRepository.findById(invoiceId)
                 .map(Invoice::getCards)
                 .map(InvoiceService::convertCards)
-                .orElseThrow(() -> new IllegalStateException("Unable to find invoice with id:" + invoiceId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + invoiceId));
     }
 
     //todo add unique number check
