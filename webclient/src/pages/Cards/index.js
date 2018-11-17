@@ -51,8 +51,8 @@ class Cards extends Component {
           </header>
           <div className="cards__toggler">
             <div
-              className={toggleClasses("debet")}
-              onClick={() => this.onChange("debet")}
+              className={toggleClasses("debit")}
+              onClick={() => this.onChange("debit")}
             >
               Дебетовые
             </div>
