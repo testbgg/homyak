@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Icon, Modal } from "antd";
+import { Table, Button, Icon, Modal, InputNumber } from "antd";
 import axios from "axios";
 
 const columns = [
@@ -37,11 +37,17 @@ export default class CreditCard extends Component {
   state = {
     visible: false,
     confirmLoading: false,
-    newCardForm: {}
+    newCardForm: {
+      dayLimit: 1000,
+      monthLimit: 10000
+    }
   };
 
   handleOk = () => {
     const { invoiceId, fetchCards } = this.props;
+    const {
+      newCardForm: { dayLimit, monthLimit }
+    } = this.state;
     this.setState({
       confirmLoading: true
     });
@@ -49,7 +55,9 @@ export default class CreditCard extends Component {
       .post("/api/cards", {
         type: "Credit",
         invoiceId: Number(invoiceId),
-        employeeId: null
+        employeeId: null,
+        dayLimit: dayLimit,
+        monthLimit: monthLimit
       })
       .then(() => {
         this.setState(
@@ -76,7 +84,7 @@ export default class CreditCard extends Component {
 
   render() {
     const { cards } = this.props;
-    const { visible, confirmLoading } = this.state;
+    const { visible, confirmLoading, newCardForm } = this.state;
     return (
       <>
         <Button className="cards__button" onClick={this.showModal}>
@@ -94,7 +102,28 @@ export default class CreditCard extends Component {
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
-        />
+        >
+          <div className="cards__form">
+            <div className="cards__form-element">
+              <p>Дневной лимит:</p>
+              <InputNumber
+                defaultValue={newCardForm.dayLimit}
+                min={0}
+                formatter={value => `${value}`}
+                onChange={value => this.onChange("dayLimit", value)}
+              />
+            </div>
+            <div className="cards__form-element">
+              <p>Месячный лимит:</p>
+              <InputNumber
+                defaultValue={newCardForm.monthLimit}
+                min={0}
+                formatter={value => `${value}`}
+                onChange={value => this.onChange("monthLimit", value)}
+              />
+            </div>
+          </div>
+        </Modal>
       </>
     );
   }
