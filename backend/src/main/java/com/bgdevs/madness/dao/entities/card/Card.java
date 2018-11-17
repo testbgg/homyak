@@ -3,6 +3,10 @@ package com.bgdevs.madness.dao.entities.card;
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
+import com.bgdevs.madness.dao.exceptions.CardIsBlockedException;
+import com.bgdevs.madness.dao.exceptions.DayLimitExceededException;
+import com.bgdevs.madness.dao.exceptions.MonthLimitExceededException;
+import com.bgdevs.madness.dao.exceptions.NegativeMoneyAmountException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,6 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static com.bgdevs.madness.dao.entities.card.CardState.*;
@@ -97,6 +102,44 @@ public class Card extends BaseEntity {
         if (state.canTransitTo(CLOSED)) {
             this.state = CLOSED;
             this.closedDate = LocalDateTime.now();
+        }
+    }
+
+    public boolean dayLimitExceeded() {
+        // TODO implement
+        return false;
+    }
+
+    public boolean monthLimitExceed() {
+        // TODO implement
+        return false;
+    }
+
+    public void tryWithdrawMoney(BigDecimal amount) {
+        checkCardIsBlocked();
+
+        BigDecimal withdrawResult = this.invoice.getCash().subtract(amount);
+        if (withdrawResult.compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeMoneyAmountException();
+
+        } else {
+            checkLimits();
+            this.invoice.setCash(withdrawResult);
+        }
+    }
+
+    private void checkLimits() {
+        if (this.dayLimitExceeded()) {
+            throw new DayLimitExceededException();
+        }
+        if (this.monthLimitExceed()) {
+            throw new MonthLimitExceededException();
+        }
+    }
+
+    private void checkCardIsBlocked() {
+        if (this.state == BLOCKED) {
+            throw new CardIsBlockedException();
         }
     }
 

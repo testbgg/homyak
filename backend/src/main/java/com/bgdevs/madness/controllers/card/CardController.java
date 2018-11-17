@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -69,4 +70,10 @@ public class CardController {
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
 
+    @PostMapping("/{cardId}/withdraw")
+    public ResponseEntity<Object> withdrawMoney(@PathVariable Long cardId,
+                                                @RequestParam("amount") Double amount) {
+        this.cardService.withdrawMoney(cardId, BigDecimal.valueOf(amount));
+        return ResponseEntity.ok("money has been withdrawn");
+    }
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
@@ -116,6 +117,14 @@ public class CardService {
         Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
         this.cardRepository.save(newCard);
         return toModel(newCard);
+    }
+
+    @Transactional
+    public void withdrawMoney(@Nonnull Long cardId, BigDecimal amount) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.tryWithdrawMoney(amount);
+        this.cardRepository.save(card);
     }
 
 }
