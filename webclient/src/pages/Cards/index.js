@@ -16,22 +16,22 @@ class Cards extends Component {
 
   render() {
     const {
-      location: { pathname }
+      location: {
+        pathname,
+        state: { cards }
+      }
     } = this.props;
     const { type } = this.state;
     const toggleClasses = toggleType =>
       classNames({
-        "Cards__toggle-button": true,
-        "Cards__toggle-button--active": toggleType === type
+        "cards__toggle-button": true,
+        "cards__toggle-button--active": toggleType === type
       });
     return (
       <div>
         <div>
-          <header className="Cards__header">
-            <div>left</div>
-            <div>right</div>
-          </header>
-          <div className="Cards__toggler">
+          <header className="cards__header" />
+          <div className="cards__toggler">
             <div
               className={toggleClasses("debet")}
               onClick={() => this.onChange("debet")}
@@ -51,10 +51,25 @@ class Cards extends Component {
               Кредитные
             </div>
           </div>
-          <main className="Cards__cards">
-            {type === "credit" && <CreditCard pathname={pathname} />}
-            {type === "debet" && <DebetCard pathname={pathname} />}
-            {type === "cashinout" && <CashInOutCard pathname={pathname} />}
+          <main className="cards__cards">
+            {type === "credit" && (
+              <CreditCard
+                pathname={pathname}
+                cards={cards.filter(card => card.type === "Credit")}
+              />
+            )}
+            {type === "debet" && (
+              <DebetCard
+                pathname={pathname}
+                cards={cards.filter(card => card.type === "Debit")}
+              />
+            )}
+            {type === "cashinout" && (
+              <CashInOutCard
+                pathname={pathname}
+                cards={cards.filter(card => card.type === "Cashinout")}
+              />
+            )}
           </main>
         </div>
       </div>

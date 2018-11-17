@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "antd";
+import { Table, Button, Icon } from "antd";
 
 const columns = [
   {
@@ -14,32 +14,6 @@ const columns = [
   {
     title: "Address",
     dataIndex: "address"
-  }
-];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park"
-  },
-  {
-    key: "2",
-    name: "Jim Malkom",
-    age: 42,
-    address: "London No. 1 Lake Park"
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park"
-  },
-  {
-    key: "4",
-    name: "Disabled User",
-    age: 99,
-    address: "Sidney No. 1 Lake Park"
   }
 ];
 
@@ -58,8 +32,13 @@ const rowSelection = {
   })
 };
 
-export default function CashinOutCard({}) {
+export default function CashinOutCard({ cards }) {
   return (
-    <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+    <>
+      <Button className="cards__button" onClick={() => console.log("Я выпускаю карты")}>
+        Выпуск новой карты
+      </Button>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={cards} />
+    </>
   );
 }

@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import { Button, Icon, Modal, Table } from "antd";
+import axios from "axios";
+import _isEmpty from "lodash/isEmpty";
+import { Button, Icon, Modal, Table, Select } from "antd";
 import "./Invoices.sass";
+
+const Option = Select.Option;
 
 const columns = [
   {
@@ -63,47 +66,54 @@ const rowSelection = {
 
 export default class Invoices extends Component {
   state = {
-    invoices: [
-      { id: "123213213", number: "1232132213" },
-      { id: "123213212", number: "1232132213" }
-    ],
-    visible: false,
-    confirmLoading: false
+    invoices: [],
+    visibleInvoices: false,
+    visibleCreateInvoice: false,
+    confirmLoading: false,
+    newInvoiceTypeCurrency: ""
   };
 
   async componentDidMount() {
-    await axios.post("/api/fill-db");
-    const { data }  = axios.get("/api/invoices");
-    console.log(data);
+    const { data: invoices } = await axios.get("/api/invoices");
+    this.setState({ invoices });
   }
 
-  showModal = () => {
+  showModal = state => {
     this.setState({
-      visible: true
+      [state]: true
     });
   };
 
-  handleOk = () => {
+  handleChange = value => {
+    this.setState({ newInvoiceTypeCurrency: value });
+  };
+
+  handleOk = state => {
     this.setState({
       confirmLoading: true
     });
     setTimeout(() => {
       this.setState({
-        visible: false,
+        [state]: false,
         confirmLoading: false
       });
     }, 2000);
   };
 
-  handleCancel = () => {
+  handleCancel = state => {
     console.log("Clicked cancel button");
     this.setState({
-      visible: false
+      [state]: false
     });
   };
 
   render() {
-    const { invoices, visible, confirmLoading } = this.state;
+    const {
+      invoices,
+      visibleInvoices,
+      visibleCreateInvoice,
+      confirmLoading
+    } = this.state;
     return (
       <div>
         <header>
@@ -111,32 +121,68 @@ export default class Invoices extends Component {
         </header>
         <section>
           <div className="invoices__to-card-invoice">
-            <Button onClick={this.showModal}>
-              Привязать Л/C <Icon type="plus-circle" />
+            <Button onClick={() => this.showModal("visibleInvoices")}>
+              Привязать Л/C <Icon type="diff" />
+            </Button>
+            <Button onClick={() => this.showModal("visibleCreateInvoice")}>
+              Создать Л/C <Icon type="plus-circle" />
             </Button>
             <Modal
               title="Выберите счет"
-              visible={visible}
-              onOk={this.handleOk}
+              visible={visibleInvoices}
+              onOk={() => this.handleOk("visibleInvoices")}
               confirmLoading={confirmLoading}
-              onCancel={this.handleCancel}
+              onCancel={() => this.handleCancel("visibleInvoices")}
             >
               <Table
                 rowSelection={rowSelection}
                 columns={columns}
-                dataSource={data}
+                dataSource={invoices.filter(invoice => !invoice.card)}
               />
             </Modal>
+            <Modal
+              title="Создать счет"
+              visible={visibleCreateInvoice}
+              onOk={() => this.handleOk("visibleCreateInvoice")}
+              confirmLoading={confirmLoading}
+              onCancel={() => this.handleCancel("visibleCreateInvoice")}
+            >
+              <Select
+                placeholder="Выберите тип валюты"
+                style={{ width: 220 }}
+                onChange={this.handleChange}
+              >
+                <Option value="local">LOCAL</Option>
+                <Option value="foreign">FOREIGN</Option>
+              </Select>
+            </Modal>
           </div>
-          <div className="invoices__list">
-            {invoices.map(({ id, number }) => (
-              <Link to={`/invoices/${id}`} key={id}>
-                <div className="invoices__invoice" key={id}>
-                  Л/C № {number}
+          {!_isEmpty(invoices) && (
+            <div className="row invoices__list">
+              {invoices.map(({ id, number, cash, currencyType, cards }) => (
+                <div className="col-xs-12 col-sm-4" key={id}>
+                  <Link
+                    to={{ pathname: `/invoices/${number}`, state: { cards } }}
+                  >
+                    <div className="invoices__invoice" key={id}>
+                      <div className="invoices__invoice-number">
+                        Л/C № {number}
+                      </div>
+                      <div className="invoices__invoice-cash">
+                        На счету: {cash}
+                      </div>
+                      <div className="invoices__invoice-cash">
+                        Тип валюты: {currencyType}
+                      </div>
+                      <div className="invoices__invoice-cash">
+                        Карт привязано: {cards.length}
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     );
