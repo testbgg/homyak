@@ -1,0 +1,36 @@
+// where to get plugin from
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+    }
+}
+
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+
+// only the following is required
+apply plugin: "com.moowork.node"
+
+
+node {
+    version = '11.1.0'
+    download = true
+}
+
+
+task helloWorld( type: NodeTask, dependsOn: 'yarn' ) {
+    script = file( 'src/node' )
+}
+
+yarn_build.dependsOn = ['yarn_install']
+
+task copySpa(dependsOn: 'yarn_build') {
+    //
+}
