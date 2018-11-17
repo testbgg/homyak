@@ -1,0 +1,19 @@
+language: java
+
+jdk: openjdk10
+
+sudo: true
+
+env:
+  global:
+  - IMG_NAME=suslik
+
+script:
+- ./gradlew asm
+
+- echo ">>> building image"
+- docker build -t $IMG_NAME:$TRAVIS_BUILD_NUMBER .
+
+- echo ">>> pushing image"
+- docker push $IMG_NAME:$TRAVIS_BUILD_NUMBER
+

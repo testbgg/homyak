@@ -36,3 +36,22 @@ dependencies {
 	compileOnly('org.projectlombok:lombok')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
+
+
+task copyDockerFile() {
+    copy {
+        from "$projectDir/src/main/resources/docker"
+        into "$rootProject.buildDir/docker"
+    }
+}
+
+task copyAppJar(type: Copy) {
+    dependsOn assemble
+    from jar.archivePath
+    into "$rootProject.buildDir/docker"
+    rename jar.archiveName, "avicenna.jar"
+}
+
+task generateDockerBuildDir() {
+    dependsOn copyDockerFile, copyAppJar
+}
