@@ -35,12 +35,12 @@ public class Card extends BaseEntity {
     @Nonnull
     private Invoice invoice;
 
-    @OneToOne(mappedBy = "card")
     @Nullable
+    @Embedded
     private Limit dayLimit;
 
-    @OneToOne(mappedBy = "card")
     @Nullable
+    @Embedded
     private Limit monthLimit;
 
     public Card(@Nonnull String number, @Nonnull CardType type, @Nonnull Employee employee,
