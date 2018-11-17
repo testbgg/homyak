@@ -46,4 +46,8 @@ public class Invoice extends BaseEntity {
         this.cash = cash;
         this.currencyType = currencyType;
     }
+
+    public void markAsCarded() {
+        this.isCard = true;
+    }
 }
