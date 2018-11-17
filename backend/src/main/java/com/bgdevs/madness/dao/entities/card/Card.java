@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.*;
 
 /**
@@ -18,21 +20,35 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Card extends BaseEntity {
 
+    @Nonnull
     private String number;
 
     @Enumerated(EnumType.STRING)
+    @Nonnull
     private CardType type;
 
     @ManyToOne
+    @Nonnull
     private Employee owner;
 
     @ManyToOne
+    @Nonnull
     private Invoice invoice;
 
     @OneToOne(mappedBy = "card")
+    @Nullable
     private Limit dayLimit;
 
     @OneToOne(mappedBy = "card")
+    @Nullable
     private Limit monthLimit;
+
+    public Card(@Nonnull String number, @Nonnull CardType type, @Nonnull Employee employee,
+                @Nonnull Invoice invoice) {
+        this.number = number;
+        this.type = type;
+        this.owner = employee;
+        this.invoice = invoice;
+    }
 
 }
