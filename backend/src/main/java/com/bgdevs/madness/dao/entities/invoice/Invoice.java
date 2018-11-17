@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ public class Invoice extends BaseEntity {
     private CurrencyType currencyType;
 
     @OneToMany(mappedBy = "invoice")
-    private List<Card> cards;
+    private List<Card> cards = new ArrayList<>();
 
     public Invoice(Long ownerId, String number, BigDecimal cash, CurrencyType currencyType) {
         this.ownerId = ownerId;

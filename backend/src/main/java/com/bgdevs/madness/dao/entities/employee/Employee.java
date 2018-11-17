@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class Employee extends BaseEntity {
     private String passportNumber;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
-    private List<Card> cards;
+    @Builder.Default
+    private List<Card> cards = new ArrayList<>();
 
 }
