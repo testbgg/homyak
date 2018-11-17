@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Table, Button, Icon, Modal, InputNumber } from "antd";
+import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 
 const columns = [
@@ -18,29 +19,20 @@ const columns = [
   }
 ];
 
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === "Disabled User", // Column configuration not to be checked
-    name: record.name
-  })
-};
-
-export default class CashinOutCard extends Component {
+export default class Debit extends Component {
   state = {
     visible: false,
+    visibleLimits: false,
     confirmLoading: false,
     newCardForm: {
       dayLimit: 1000,
       monthLimit: 10000
-    }
+    },
+    updateLimits: {
+      dayLimit: 1000,
+      monthLimit: 10000
+    },
+    selectedRowKeys: []
   };
 
   handleOk = () => {
@@ -68,44 +60,96 @@ export default class CashinOutCard extends Component {
       });
   };
 
-  handleCancel = () => {
+  setLimits = () => {
+    const { fetchCards } = this.props;
+    const {
+      updateLimits: { dayLimit, monthLimit },
+      selectedRowKeys
+    } = this.state;
     this.setState({
-      visible: false
+      confirmLoading: true
+    });
+    axios
+      .put("/api/cards/limits", {
+        ids: selectedRowKeys,
+        dayLimit: dayLimit,
+        monthLimit: monthLimit
+      })
+      .then(() => {
+        fetchCards();
+        this.setState({
+          visibleLimits: false,
+          confirmLoading: false
+        });
+      });
+  };
+
+  handleCancel = (modalVisible) => {
+    this.setState({
+      [modalVisible]: false
     });
   };
 
-  showModal = () => {
+  showModal = (modalVisible) => {
     this.setState({
-      visible: true
+      [modalVisible]: true
     });
   };
 
-  onChange = (formElement, value) => {
+  onChange = (formElement, value, stateObject) => {
     this.setState(prevState => ({
-      newCardForm: { ...prevState.newCardForm, [formElement]: value }
+      [stateObject]: { ...prevState[stateObject], [formElement]: value }
     }));
   };
 
+  onSelect = rowKeys => {
+    this.setState({ selectedRowKeys: rowKeys });
+  };
   render() {
     const { cards } = this.props;
-    const { visible, confirmLoading, newCardForm } = this.state;
+    const {
+      visible,
+      confirmLoading,
+      newCardForm,
+      selectedRowKeys,
+      visibleLimits,
+      updateLimits
+    } = this.state;
+    const rowSelection = {
+      onChange: selectedRowKeys => this.onSelect(selectedRowKeys),
+      getCheckboxProps: record => ({
+        disabled: record.name === "Disabled User", // Column configuration not to be checked
+        name: record.name
+      })
+    };
+    const rowSelected = _isEmpty(selectedRowKeys);
     return (
       <>
-        <Button className="cards__button" onClick={this.showModal}>
-          Выпуск новой карты
-          <Icon type="plus-circle" />
-        </Button>
+        <div className="cards__buttons">
+          <Button className="cards__button" onClick={() => this.showModal("visible")}>
+            Выпуск новой карты
+            <Icon type="plus-circle" />
+          </Button>
+          <Button
+            className="cards__button"
+            onClick={() => this.showModal("visibleLimits")}
+            disabled={rowSelected}
+          >
+            Установить лимиты на карту(-ы)
+            <Icon type="plus-circle" />
+          </Button>
+        </div>
         <Table
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={cards}
+          dataSource={cards.map(card => ({ ...card, key: card.id }))}
         />
         <Modal
           title="Выпуск новой карты"
           visible={visible}
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
-          onCancel={this.handleCancel}
+          onCancel={() => this.handleCancel("visible")}
         >
           <div className="cards__form">
             <div className="cards__form-element">
@@ -114,7 +158,9 @@ export default class CashinOutCard extends Component {
                 defaultValue={newCardForm.dayLimit}
                 min={0}
                 formatter={value => `${value}`}
-                onChange={value => this.onChange("dayLimit", value)}
+                onChange={value =>
+                  this.onChange("dayLimit", value, "newCardForm")
+                }
               />
             </div>
             <div className="cards__form-element">
@@ -123,7 +169,41 @@ export default class CashinOutCard extends Component {
                 defaultValue={newCardForm.monthLimit}
                 min={0}
                 formatter={value => `${value}`}
-                onChange={value => this.onChange("monthLimit", value)}
+                onChange={value =>
+                  this.onChange("monthLimit", value, "newCardForm")
+                }
+              />
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          title="Установите лимиты на карту(-ы)"
+          visible={visibleLimits}
+          onOk={this.setLimits}
+          confirmLoading={confirmLoading}
+          onCancel={() => this.handleCancel("visibleLimits")}
+        >
+          <div className="cards__form">
+            <div className="cards__form-element">
+              <p>Дневной лимит:</p>
+              <InputNumber
+                defaultValue={updateLimits.dayLimit}
+                min={0}
+                formatter={value => `${value}`}
+                onChange={value =>
+                  this.onChange("dayLimit", value, "updateLimits")
+                }
+              />
+            </div>
+            <div className="cards__form-element">
+              <p>Месячный лимит:</p>
+              <InputNumber
+                defaultValue={updateLimits.monthLimit}
+                min={0}
+                formatter={value => `${value}`}
+                onChange={value =>
+                  this.onChange("monthLimit", value, "updateLimits")
+                }
               />
             </div>
           </div>
