@@ -1,23 +1,8 @@
 import React, { Component } from "react";
-import { Table, Button, Icon, Modal, InputNumber } from "antd";
+import { Table, Button, Icon, Modal, InputNumber, Select } from "antd";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
-
-const columns = [
-  {
-    title: "Номер карты",
-    dataIndex: "number",
-    render: text => <a href="javascript:;">{text}</a>
-  },
-  {
-    title: "Дневной лимит",
-    dataIndex: "dayLimit"
-  },
-  {
-    title: "Месячный лимит",
-    dataIndex: "monthLimit"
-  }
-];
+import columns from './TableColumns';
 
 export default class CashInOut extends Component {
   state = {
@@ -36,18 +21,18 @@ export default class CashInOut extends Component {
   };
 
   handleOk = () => {
-    const { invoiceId, fetchCards } = this.props;
+    const { invoiceId, fetchCards, type } = this.props;
     const {
-      newCardForm: { dayLimit, monthLimit }
+      newCardForm: { dayLimit, monthLimit, employeeId }
     } = this.state;
     this.setState({
       confirmLoading: true
     });
     axios
       .post("/api/cards", {
-        type: "Cash in/out",
+        type: type,
         invoiceId: Number(invoiceId),
-        employeeId: null,
+        employeeId: employeeId,
         dayLimit: dayLimit,
         monthLimit: monthLimit
       })
@@ -84,13 +69,13 @@ export default class CashInOut extends Component {
       });
   };
 
-  handleCancel = (modalVisible) => {
+  handleCancel = modalVisible => {
     this.setState({
       [modalVisible]: false
     });
   };
 
-  showModal = (modalVisible) => {
+  showModal = modalVisible => {
     this.setState({
       [modalVisible]: true
     });
@@ -106,7 +91,7 @@ export default class CashInOut extends Component {
     this.setState({ selectedRowKeys: rowKeys });
   };
   render() {
-    const { cards } = this.props;
+    const { cards, employees } = this.props;
     const {
       visible,
       confirmLoading,
@@ -126,7 +111,10 @@ export default class CashInOut extends Component {
     return (
       <>
         <div className="cards__buttons">
-          <Button className="cards__button" onClick={() => this.showModal("visible")}>
+          <Button
+            className="cards__button"
+            onClick={() => this.showModal("visible")}
+          >
             Выпуск новой карты
             <Icon type="plus-circle" />
           </Button>
@@ -152,6 +140,29 @@ export default class CashInOut extends Component {
           onCancel={() => this.handleCancel("visible")}
         >
           <div className="cards__form">
+            <div className="cards__form-element">
+              <p>Выберите сотрудника</p>
+              <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Список сотрудников"
+                optionFilterProp="children"
+                onChange={value =>
+                  this.onChange("employeeId", value, "newCardForm")
+                }
+                filterOption={(input, option) =>
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {employees.map(({ id, firstName, secondName }) => (
+                  <Select.Option value={id}>
+                    {`${firstName} ${secondName}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
             <div className="cards__form-element">
               <p>Дневной лимит:</p>
               <InputNumber
