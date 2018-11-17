@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 /**
  * @author Nikita Shaldenkov
@@ -40,8 +41,7 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel,
-                                         Long ownerId) {
+    public ResponseEntity<Object> create(@Valid @RequestBody CreateInvoiceModel createInvoiceModel, Long ownerId) {
         InvoiceModel invoiceModel = this.invoiceService.create(createInvoiceModel, ownerId);
         return ResponseEntity.created(URI.create("/invoices/" + invoiceModel.getId())).body(invoiceModel);
     }
@@ -52,9 +52,9 @@ public class InvoiceController {
         return ResponseEntity.ok(this.invoiceService.findCardsByType(invoiceId, type));
     }
 
-    @PostMapping("/{invoiceId}/mark-as-carded")
-    public ResponseEntity<Object> markInvoiceAsCard(@PathVariable long invoiceId) {
-        this.invoiceService.markAsCard(invoiceId);
+    @PostMapping("/mark-as-carded")
+    public ResponseEntity<Object> markInvoiceAsCard(@RequestParam("ids[]") List<Long> ids) {
+        this.invoiceService.markAsCard(ids);
         return ResponseEntity.ok().build();
     }
 }

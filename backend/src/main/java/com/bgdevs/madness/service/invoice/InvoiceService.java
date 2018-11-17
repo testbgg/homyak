@@ -79,10 +79,13 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void markAsCard(long invoiceId) {
-        this.invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new ElementNotFoundException(invoiceId))
-                .setCard(true);
+    public void markAsCard(List<Long> invoiceIds) {
+        invoiceIds.forEach(id -> {
+            Invoice invoice = this.invoiceRepository.findById(id)
+                    .orElseThrow(() -> new ElementNotFoundException(id));
+            invoice.setCard(true);
+            this.invoiceRepository.save(invoice);
+        });
     }
 
 }
