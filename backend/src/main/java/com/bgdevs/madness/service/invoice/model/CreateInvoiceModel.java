@@ -1,13 +1,13 @@
 package com.bgdevs.madness.service.invoice.model;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
 /**
  * @author Nikita Shaldenkov
  */
-@Value
+@Data
 public class CreateInvoiceModel {
 
     @NotNull

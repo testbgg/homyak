@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static com.bgdevs.madness.dao.entities.card.CardState.*;
@@ -51,20 +52,11 @@ public class Card extends BaseEntity {
     private Invoice invoice;
 
     @Nullable
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "moneyLimit", column = @Column(name = "day_limit_money")),
-            @AttributeOverride(name = "refreshIn", column = @Column(name = "day_limit_refresh_in"))}
-    )
-    private Limit dayLimit;
+    private BigDecimal
+            dayLimit;
 
     @Nullable
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "moneyLimit", column = @Column(name = "month_limit_money")),
-            @AttributeOverride(name = "refreshIn", column = @Column(name = "month_limit_refresh_in"))}
-    )
-    private Limit monthLimit;
+    private BigDecimal monthLimit;
 
     private Card(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                  @Nonnull Invoice invoice) {

@@ -5,6 +5,7 @@ import lombok.Value;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.math.BigDecimal;
 
 /**
  * @author Nikita Shaldenkov
@@ -21,4 +22,10 @@ public class CreateCardModel {
 
     @NotNull
     private long invoiceId;
+
+    @Nullable
+    private BigDecimal dayLimit;
+
+    @Nullable
+    private BigDecimal monthLimit;
 }

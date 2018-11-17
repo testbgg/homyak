@@ -32,10 +32,10 @@ public class CardModel {
     private LocalDateTime closedDate;
 
     @Nullable
-    private CardLimitModel dayLimit;
+    private BigDecimal dayLimit;
 
     @Nullable
-    private CardLimitModel monthLimit;
+    private BigDecimal monthLimit;
 
     @Value
     static class CardOwnerModel {
@@ -59,12 +59,5 @@ public class CardModel {
 
     }
 
-    @Value
-    static class CardLimitModel {
 
-        private BigDecimal moneyLimit;
-
-        private LocalDateTime refreshIn;
-
-    }
 }

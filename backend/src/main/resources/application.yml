@@ -3,3 +3,15 @@ spring:
     hibernate:
       ddl-auto: 'create-drop'
 
+---
+
+spring.profiles: postgres
+
+spring.datasource:
+  url: jdbc:postgresql://localhost:5432/bgdevs
+  username: bgdevs
+  password: bgdevs
+
+spring.jpa.properties.hibernate:
+  dialect: org.hibernate.dialect.PostgreSQL94Dialect
+  jdbc.lob.non_contextual_creation: true
