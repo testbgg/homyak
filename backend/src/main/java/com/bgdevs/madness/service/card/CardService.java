@@ -125,4 +125,12 @@ public class CardService {
         private BigDecimal monthLimit;
     }
 
+    private Card buildCard(@Nonnull CreateCardModel model, @Nullable Employee employee, @Nonnull Invoice invoice) {
+        CardType type = CardType.of(model.getType());
+        if (type == null) {
+            throw new IllegalStateException("Invalid card type: " + type);
+        }
+        return Card.request(UUID.randomUUID().toString(), type, employee, invoice);
+    }
+
 }

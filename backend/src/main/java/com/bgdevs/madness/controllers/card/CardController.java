@@ -35,6 +35,7 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<Object> requestCard(@Valid @RequestBody CreateCardModel createCardModel) {
+
         CardModel cardModel = this.cardService.requestCard(createCardModel);
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
