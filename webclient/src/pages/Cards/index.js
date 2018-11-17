@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import classNames from "classnames";
-import axios from "axios";
-import Card from "./Card";
-import "./Cards.sass";
+import React, { Component } from 'react';
+import classNames from 'classnames';
+import axios from 'axios';
+import Card from './Card';
+import './Cards.sass';
 
 class Cards extends Component {
   state = {
-    type: "debit",
+    type: 'debit',
     cards: [],
     employees: []
   };
@@ -22,7 +22,7 @@ class Cards extends Component {
       }
     } = this.props;
     const { data: cards } = await axios.get(`/api/invoices/${invoiceId}/cards`);
-    const { data: employees } = await axios.get("/api/employees");
+    const { data: employees } = await axios.get('/api/employees');
     this.setState({ cards, employees });
   }
 
@@ -40,60 +40,60 @@ class Cards extends Component {
     const { type, cards, employees } = this.state;
     const toggleClasses = toggleType =>
       classNames({
-        "cards__toggle-button": true,
-        "cards__toggle-button--active": toggleType === type
+        'cards__toggle-button': true,
+        'cards__toggle-button--active': toggleType === type
       });
     return (
-      <div>
+      <div className="container">
         <div>
           <header>
             <h1>Корпоративные карты</h1>
           </header>
           <div className="cards__toggler">
             <div
-              className={toggleClasses("debet")}
-              onClick={() => this.onChange("debet")}
+              className={toggleClasses('debet')}
+              onClick={() => this.onChange('debet')}
             >
               Дебетовые
             </div>
             <div
-              className={toggleClasses("cashinout")}
-              onClick={() => this.onChange("cashinout")}
+              className={toggleClasses('cashinout')}
+              onClick={() => this.onChange('cashinout')}
             >
               Cash IN/OUT
             </div>
             <div
-              className={toggleClasses("credit")}
-              onClick={() => this.onChange("credit")}
+              className={toggleClasses('credit')}
+              onClick={() => this.onChange('credit')}
             >
               Кредитные
             </div>
           </div>
           <main className="cards__cards">
-            {type === "credit" && (
+            {type === 'credit' && (
               <Card
                 pathname={pathname}
-                cards={cards.filter(card => card.type === "Credit")}
+                cards={cards.filter(card => card.type === 'Credit')}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}
                 type="Credit"
               />
             )}
-            {type === "debit" && (
+            {type === 'debit' && (
               <Card
                 pathname={pathname}
-                cards={cards.filter(card => card.type === "Debit")}
+                cards={cards.filter(card => card.type === 'Debit')}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}
                 type="Debit"
               />
             )}
-            {type === "cashinout" && (
+            {type === 'cashinout' && (
               <Card
                 pathname={pathname}
-                cards={cards.filter(card => card.type === "Cash in/out")}
+                cards={cards.filter(card => card.type === 'Cash in/out')}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}

@@ -13,25 +13,27 @@ import './App.css';
 
 const Header = () => (
   <header>
-    <div className="invoices__header-top">
+    <div className="container invoices__header-top">
       <Link to="/invoices/list">
         <div className="invoices__logo" />
       </Link>
       <div>Patient login</div>
     </div>
     <nav className="invoices__navigation">
-      <span className="invoices__navigation-item">Главная</span>
-      <span className="invoices__navigation-item">Выписки</span>
-      <span className="invoices__navigation-item">Платежи</span>
-      <span className="invoices__navigation-item invoices__navigation-item--with-pseudo">
-        Валюта
-      </span>
-      <span className="invoices__navigation-item invoices__navigation-item--selected">
-        Карты
-      </span>
-      <span className="invoices__navigation-item">Кредиты</span>
-      <span className="invoices__navigation-item">Депозиты</span>
-      <span className="invoices__navigation-item">Сообщения</span>
+      <div className="container invoices__navigations--in-container">
+        <span className="invoices__navigation-item">Главная</span>
+        <span className="invoices__navigation-item">Выписки</span>
+        <span className="invoices__navigation-item">Платежи</span>
+        <span className="invoices__navigation-item invoices__navigation-item--with-pseudo">
+          Валюта
+        </span>
+        <span className="invoices__navigation-item invoices__navigation-item--selected">
+          Карты
+        </span>
+        <span className="invoices__navigation-item">Кредиты</span>
+        <span className="invoices__navigation-item">Депозиты</span>
+        <span className="invoices__navigation-item">Сообщения</span>
+      </div>
     </nav>
   </header>
 );
@@ -39,7 +41,7 @@ const Header = () => (
 class App extends Component {
   render() {
     return (
-      <div className="container">
+      <div>
         <Router>
           <div>
             <Route>

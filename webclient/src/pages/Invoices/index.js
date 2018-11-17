@@ -112,7 +112,7 @@ export default class Invoices extends Component {
     const invoicesCarded = invoices.filter(invoice => invoice.card);
     const invoicesWithoutCarded = invoices.filter(invoice => !invoice.card);
     return (
-      <div>
+      <div className="container">
         <div>
           <h1>Расчетные Л/C</h1>
         </div>
