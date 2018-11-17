@@ -157,7 +157,7 @@ export default class CashInOut extends Component {
                 }
               >
                 {employees.map(({ id, firstName, secondName }) => (
-                  <Select.Option value={id}>
+                  <Select.Option value={id} key={id}>
                     {`${firstName} ${secondName}`}
                   </Select.Option>
                 ))}
