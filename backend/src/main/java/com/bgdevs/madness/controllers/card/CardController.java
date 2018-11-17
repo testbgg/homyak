@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * @author Nikita Shaldenkov
  */
 @RestController
-@RequestMapping("/cards")
+@RequestMapping("api/cards")
 public class CardController {
 
 

@@ -17,7 +17,7 @@ import java.net.URI;
  * @author Nikita Shaldenkov
  */
 @RestController
-@RequestMapping("/invoices")
+@RequestMapping("api/invoices")
 public class InvoiceController {
 
     @Autowired
