@@ -50,7 +50,7 @@ class Cards extends Component {
       <div className="container">
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link to="../invoices/list">
+            <Link to="../invoices">
               <a href="./">Профиль</a>
             </Link>
           </Breadcrumb.Item>
