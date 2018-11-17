@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Table, Button, Icon, Modal } from "antd";
+import axios from "axios";
 
 const columns = [
   {
@@ -33,7 +34,6 @@ const rowSelection = {
 };
 
 export default class CashinOutCard extends Component {
-
   state = {
     visible: false,
     confirmLoading: false,
@@ -41,15 +41,23 @@ export default class CashinOutCard extends Component {
   };
 
   handleOk = () => {
+    const { invoiceId, fetchCards } = this.props;
     this.setState({
       confirmLoading: true
     });
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false
+    axios
+      .post("/api/cards", {
+        type: "Debit",
+        invoiceId: Number(invoiceId),
+        employeeId: null
+      })
+      .then(() => {
+        fetchCards();
+        this.setState({
+          visible: false,
+          confirmLoading: false
+        });
       });
-    }, 2000);
   };
 
   handleCancel = () => {
@@ -61,8 +69,8 @@ export default class CashinOutCard extends Component {
   showModal = () => {
     this.setState({
       visible: true
-    })
-  }
+    });
+  };
 
   render() {
     const { cards } = this.props;
@@ -84,8 +92,7 @@ export default class CashinOutCard extends Component {
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
-        >
-        </Modal>
+        />
       </>
     );
   }

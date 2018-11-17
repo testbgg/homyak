@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classNames from "classnames";
+import axios from "axios";
 import CreditCard from "./CreditCard";
 import DebetCard from "./DebetCard";
 import CashInOutCard from "./CashInOutCard";
@@ -7,8 +8,23 @@ import "./Cards.sass";
 
 class Cards extends Component {
   state = {
-    type: "debet"
+    type: "debet",
+    cards: []
   };
+
+  componentDidMount() {
+    this.fetchCards.call(this);
+  }
+
+  async fetchCards() {
+    const {
+      match: {
+        params: { invoiceId }
+      }
+    } = this.props;
+    const { data: cards } = await axios.get(`/api/invoices/${invoiceId}/cards`);
+    this.setState({ cards });
+  }
 
   onChange = key => {
     this.setState({ type: key });
@@ -16,15 +32,12 @@ class Cards extends Component {
 
   render() {
     const {
-      location: {
-        pathname,
-        state: { cards }
-      },
+      location: { pathname },
       match: {
         params: { invoiceId }
       }
     } = this.props;
-    const { type } = this.state;
+    const { type, cards } = this.state;
     const toggleClasses = toggleType =>
       classNames({
         "cards__toggle-button": true,
@@ -33,7 +46,9 @@ class Cards extends Component {
     return (
       <div>
         <div>
-          <header className="cards__header" />
+          <header>
+            <h1>Корпоративные карты</h1>
+          </header>
           <div className="cards__toggler">
             <div
               className={toggleClasses("debet")}
@@ -60,6 +75,7 @@ class Cards extends Component {
                 pathname={pathname}
                 cards={cards.filter(card => card.type === "Credit")}
                 invoiceId={invoiceId}
+                fetchCards={this.fetchCards.bind(this)}
               />
             )}
             {type === "debet" && (
@@ -67,6 +83,7 @@ class Cards extends Component {
                 pathname={pathname}
                 cards={cards.filter(card => card.type === "Debit")}
                 invoiceId={invoiceId}
+                fetchCards={this.fetchCards.bind(this)}
               />
             )}
             {type === "cashinout" && (
@@ -74,6 +91,7 @@ class Cards extends Component {
                 pathname={pathname}
                 cards={cards.filter(card => card.type === "Cash in/out")}
                 invoiceId={invoiceId}
+                fetchCards={this.fetchCards.bind(this)}
               />
             )}
           </main>

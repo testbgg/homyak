@@ -89,7 +89,7 @@ public class InvoiceService {
         invoiceIds.forEach(id -> {
             Invoice invoice = this.invoiceRepository.findById(id)
                     .orElseThrow(() -> new ElementNotFoundException(id));
-            invoice.setCard(true);
+            invoice.markAsCarded();
             this.invoiceRepository.save(invoice);
         });
     }

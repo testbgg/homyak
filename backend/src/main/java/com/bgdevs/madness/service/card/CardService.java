@@ -1,9 +1,7 @@
 package com.bgdevs.madness.service.card;
 
-import com.bgdevs.madness.controllers.card.LimitModel;
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
-import com.bgdevs.madness.dao.entities.card.Limit;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
 import com.bgdevs.madness.dao.repositories.CardRepository;
@@ -12,10 +10,12 @@ import com.bgdevs.madness.dao.repositories.InvoiceRepository;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -37,7 +37,6 @@ public class CardService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-
     @Nonnull
     @Transactional
     public CardModel requestCard(@Nonnull CreateCardModel model) {
@@ -54,34 +53,12 @@ public class CardService {
         return toModel(saved);
     }
 
-    private Card buildCard(@Nonnull CreateCardModel model, @Nonnull Employee employee, @Nonnull Invoice invoice) {
-        CardType type = CardType.of(model.getType());
-        if (type == null) {
-            throw new IllegalStateException("Invalid card type: " + type);
-        }
-        return Card.request(UUID.randomUUID().toString(), type, employee, invoice);
-    }
-
     @Transactional
-    public void addLimitToCard(Long cardId, LimitModel limit) {
+    public void addLimitToCard(@Nonnull Long cardId, AddLimitsModel addLimitsModel) {
         Card card = this.cardRepository.findById(cardId)
-                .map(c -> setLimit(limit, c))
                 .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
         this.cardRepository.save(card);
-    }
-
-    private Card setLimit(LimitModel limit, Card c) {
-        Limit domainLimit = new Limit(limit.getMoneyLimit(), limit.getRefreshIn());
-        switch (limit.getType()) {
-            case "day":
-                c.setDayLimit(domainLimit);
-                break;
-
-            case "month":
-                c.setMonthLimit(domainLimit);
-                break;
-        }
-        return c;
     }
 
     @Transactional
@@ -115,16 +92,30 @@ public class CardService {
         oldCard.close();
         this.cardRepository.save(oldCard);
         Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
+        newCard.updateLimits(oldCard.getDayLimit(), oldCard.getMonthLimit());
         this.cardRepository.save(newCard);
         return toModel(newCard);
     }
 
-    @Transactional
-    public void withdrawMoney(@Nonnull Long cardId, BigDecimal amount) {
-        Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
-        card.tryWithdrawMoney(amount);
-        this.cardRepository.save(card);
+
+    @Data
+    public static class AddLimitsModel {
+
+        @Nullable
+        private BigDecimal dayLimit;
+
+        @Nullable
+        private BigDecimal monthLimit;
+    }
+
+    private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
+        CardType type = CardType.of(cardToBeCreated.getType());
+        if (type == null) {
+            throw new IllegalStateException("Invalid card type: " + type);
+        }
+        Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
+        card.updateLimits(cardToBeCreated.getDayLimit(), cardToBeCreated.getMonthLimit());
+        return card;
     }
 
 }

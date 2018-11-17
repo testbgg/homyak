@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * @author Nikita Shaldenkov
@@ -17,5 +16,4 @@ public class Limit {
 
     private BigDecimal moneyLimit;
 
-    private LocalDateTime refreshIn;
 }
