@@ -19,6 +19,9 @@ class Cards extends Component {
       location: {
         pathname,
         state: { cards }
+      },
+      match: {
+        params: { invoiceId }
       }
     } = this.props;
     const { type } = this.state;
@@ -56,18 +59,21 @@ class Cards extends Component {
               <CreditCard
                 pathname={pathname}
                 cards={cards.filter(card => card.type === "Credit")}
+                invoiceId={invoiceId}
               />
             )}
             {type === "debet" && (
               <DebetCard
                 pathname={pathname}
                 cards={cards.filter(card => card.type === "Debit")}
+                invoiceId={invoiceId}
               />
             )}
             {type === "cashinout" && (
               <CashInOutCard
                 pathname={pathname}
-                cards={cards.filter(card => card.type === "Cashinout")}
+                cards={cards.filter(card => card.type === "Cash in/out")}
+                invoiceId={invoiceId}
               />
             )}
           </main>

@@ -9,60 +9,11 @@ const Option = Select.Option;
 
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    render: text => <a href="javascript:;">{text}</a>
-  },
-  {
-    title: "Age",
-    dataIndex: "age"
-  },
-  {
-    title: "Address",
-    dataIndex: "address"
+    title: "Номер Л/C",
+    dataIndex: "number"
   }
 ];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park"
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park"
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park"
-  },
-  {
-    key: "4",
-    name: "Disabled User",
-    age: 99,
-    address: "Sidney No. 1 Lake Park"
-  }
-];
-
 // rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === "Disabled User", // Column configuration not to be checked
-    name: record.name
-  })
-};
 
 export default class Invoices extends Component {
   state = {
@@ -70,7 +21,8 @@ export default class Invoices extends Component {
     visibleInvoices: false,
     visibleCreateInvoice: false,
     confirmLoading: false,
-    newInvoiceTypeCurrency: ""
+    newInvoiceTypeCurrency: "",
+    selectedInvoicesWithoutCard: []
   };
 
   async componentDidMount() {
@@ -100,11 +52,24 @@ export default class Invoices extends Component {
     }, 2000);
   };
 
+  handleCarded = state => {
+    this.setState({
+      confirmLoading: true
+    });
+    axios.post("/api/invoices/mark-as-carded", {
+      ids: this.state.selectedInvoicesWithoutCard
+    });
+  };
+
   handleCancel = state => {
     console.log("Clicked cancel button");
     this.setState({
       [state]: false
     });
+  };
+
+  selectRow = rows => {
+    this.setState({ selectedInvoicesWithoutCard: rows.map(row => row.id) });
   };
 
   render() {
@@ -114,6 +79,15 @@ export default class Invoices extends Component {
       visibleCreateInvoice,
       confirmLoading
     } = this.state;
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => this.selectRow(selectedRows),
+      getCheckboxProps: record => ({
+        disabled: record.name === "Disabled User", // Column configuration not to be checked
+        name: record.name
+      })
+    };
+    const invoicesCarded = invoices.filter(invoice => invoice.card);
+    const invoicesWithoutCarded = invoices.filter(invoice => !invoice.card);
     return (
       <div>
         <header>
@@ -130,14 +104,14 @@ export default class Invoices extends Component {
             <Modal
               title="Выберите счет"
               visible={visibleInvoices}
-              onOk={() => this.handleOk("visibleInvoices")}
+              onOk={() => this.handleCarded("visibleInvoices")}
               confirmLoading={confirmLoading}
               onCancel={() => this.handleCancel("visibleInvoices")}
             >
               <Table
                 rowSelection={rowSelection}
                 columns={columns}
-                dataSource={invoices.filter(invoice => !invoice.card)}
+                dataSource={invoicesWithoutCarded}
               />
             </Modal>
             <Modal
@@ -157,13 +131,11 @@ export default class Invoices extends Component {
               </Select>
             </Modal>
           </div>
-          {!_isEmpty(invoices) && (
+          {!_isEmpty(invoicesCarded) && (
             <div className="row invoices__list">
-              {invoices.map(({ id, number, cash, currencyType, cards }) => (
+              {invoicesCarded.map(({ id, number, cash, currencyType, cards }) => (
                 <div className="col-xs-12 col-sm-4" key={id}>
-                  <Link
-                    to={{ pathname: `/invoices/${number}`, state: { cards } }}
-                  >
+                  <Link to={{ pathname: `/invoices/${id}`, state: { cards } }}>
                     <div className="invoices__invoice" key={id}>
                       <div className="invoices__invoice-number">
                         Л/C № {number}
