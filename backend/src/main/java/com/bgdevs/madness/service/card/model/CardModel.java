@@ -5,6 +5,7 @@ import com.bgdevs.madness.dao.entities.invoice.CurrencyType;
 import lombok.Value;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -54,7 +55,7 @@ public class CardModel {
     @Value
     static class CardLimitModel {
 
-        private long moneyLimit;
+        private BigDecimal moneyLimit;
 
         private LocalDateTime refreshIn;
 

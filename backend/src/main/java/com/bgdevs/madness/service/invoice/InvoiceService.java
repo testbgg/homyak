@@ -13,6 +13,7 @@ import com.bgdevs.madness.service.invoice.model.InvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import java.math.BigDecimal;
@@ -38,18 +39,21 @@ public class InvoiceService {
                 .collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public List<InvoiceModel> findAll(long ownerId) {
         return this.invoiceRepository.findAllByOwnerId(ownerId).stream()
                 .map(InvoiceModelMapper::toModel)
                 .collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public InvoiceModel findOne(long invoiceId) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(InvoiceModelMapper::toModel)
                 .orElseThrow(() -> new ElementNotFoundException(invoiceId));
     }
 
+    @Transactional(readOnly = true)
     public List<CardModel> findCardsByType(long invoiceId, @Nonnull CardType type) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(Invoice::getCards)
@@ -60,6 +64,7 @@ public class InvoiceService {
                 .collect(toList());
     }
 
+    @Transactional
     public InvoiceModel create(CreateInvoiceModel invoice) {
         Invoice created = this.invoiceRepository.save(toEntity(invoice));
         return toModel(created);
@@ -73,6 +78,7 @@ public class InvoiceService {
                 CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 
+    @Transactional
     public void markAsCard(long invoiceId) {
         this.invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new ElementNotFoundException(invoiceId))

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Nikita Shaldenkov
@@ -20,19 +21,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Card extends BaseEntity {
 
-    @Nonnull
+    @NotNull
+    @Column(unique = true)
     private String number;
 
     @Enumerated(EnumType.STRING)
-    @Nonnull
+    @NotNull
     private CardType type;
 
     @ManyToOne
-    @Nonnull
+    @NotNull
     private Employee owner;
 
     @ManyToOne
-    @Nonnull
+    @NotNull
     private Invoice invoice;
 
     @Nullable

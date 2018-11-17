@@ -8,6 +8,7 @@ import com.bgdevs.madness.service.employee.model.EmployeeModelMapper;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,11 +24,13 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Transactional
     public EmployeeModel create(CreateEmployeeModel employee) {
         Employee created = this.employeeRepository.save(toEntity(employee));
         return toModel(created);
     }
 
+    @Transactional(readOnly = true)
     public EmployeeModel findById(long id) {
         return this.employeeRepository.findById(id)
                 .map(EmployeeModelMapper::toModel)
@@ -43,6 +46,7 @@ public class EmployeeService {
                 .build();
     }
 
+    @Transactional
     public EmployeeModel delete(long id) {
         EmployeeModel employeeModel = this.employeeRepository.findById(id)
                 .map(EmployeeModelMapper::toModel)
@@ -51,6 +55,7 @@ public class EmployeeService {
         return employeeModel;
     }
 
+    @Transactional(readOnly = true)
     public List<EmployeeModel> findAll() {
         return this.employeeRepository.findAll().stream()
                 .map(EmployeeModelMapper::toModel)
