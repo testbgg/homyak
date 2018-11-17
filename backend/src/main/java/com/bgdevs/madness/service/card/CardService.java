@@ -82,4 +82,40 @@ public class CardService {
         }
         return c;
     }
+
+    @Transactional
+    public void activateCard(@Nonnull Long cardId) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.activate();
+        this.cardRepository.save(card);
+    }
+
+    @Transactional
+    public void blockCard(@Nonnull Long cardId) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.block();
+        this.cardRepository.save(card);
+    }
+
+    @Transactional
+    public void closeCard(@Nonnull Long cardId) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        card.close();
+        this.cardRepository.save(card);
+    }
+
+    @Transactional
+    public CardModel reissueCard(@Nonnull Long cardId) {
+        Card oldCard = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        oldCard.close();
+        this.cardRepository.save(oldCard);
+        Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
+        this.cardRepository.save(newCard);
+        return toModel(newCard);
+    }
+
 }

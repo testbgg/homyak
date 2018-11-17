@@ -66,7 +66,7 @@ public class Card extends BaseEntity {
     )
     private Limit monthLimit;
 
-    private Card(@Nonnull String number, @Nonnull CardType type, @Nonnull Employee employee,
+    private Card(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                  @Nonnull Invoice invoice) {
         this.number = number;
         this.type = type;
@@ -74,7 +74,7 @@ public class Card extends BaseEntity {
         this.invoice = invoice;
     }
 
-    public static Card request(@Nonnull String number, @Nonnull CardType type, @Nonnull Employee employee,
+    public static Card request(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                                @Nonnull Invoice invoice) {
         return new Card(number, type, employee, invoice);
     }
