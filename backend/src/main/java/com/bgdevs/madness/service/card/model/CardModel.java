@@ -20,9 +20,16 @@ public class CardModel {
 
     private CardType type;
 
+    @Nullable
     private CardOwnerModel owner;
 
     private CardInvoiceModel invoice;
+
+    @Nullable
+    private LocalDateTime openedDate;
+
+    @Nullable
+    private LocalDateTime closedDate;
 
     @Nullable
     private CardLimitModel dayLimit;
