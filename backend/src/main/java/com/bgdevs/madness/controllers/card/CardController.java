@@ -1,6 +1,8 @@
 package com.bgdevs.madness.controllers.card;
 
+import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
+import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.service.card.CardService;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.net.URI.create;
@@ -27,10 +30,20 @@ public class CardController {
     @Autowired
     private CardService cardService;
 
+    @Autowired
+    private CardRepository cardRepository;
+
     @GetMapping("/types")
     public ResponseEntity<Object> getCardTypes() {
         List<String> types = Stream.of(CardType.values()).map(CardType::getLabel).collect(toList());
         return ResponseEntity.ok(types);
+    }
+
+    @GetMapping("/{cardId}")
+    public ResponseEntity<Object> card(@PathVariable Long cardId) {
+        Optional<Card> card = this.cardRepository.findById(cardId);
+        return card.<ResponseEntity<Object>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
