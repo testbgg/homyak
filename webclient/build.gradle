@@ -18,19 +18,18 @@ plugins {
 // only the following is required
 apply plugin: "com.moowork.node"
 
-
 node {
     version = '11.1.0'
     download = true
 }
 
 
-task helloWorld( type: NodeTask, dependsOn: 'yarn' ) {
-    script = file( 'src/node' )
-}
 
 yarn_build.dependsOn = ['yarn_install']
 
-task copySpa(dependsOn: 'yarn_build') {
-    //
+task copySpaToJar(dependsOn: 'yarn_build') {
+    copy {
+        from 'build'
+        into '../backend/src/main/resources/public'
+    }
 }

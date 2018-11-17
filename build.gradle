@@ -1,0 +1,6 @@
+
+
+
+task asm(dependsOn: ['webclient:copySpaToJar', 'backend:build']) {
+    // empty
+}
