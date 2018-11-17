@@ -21,6 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addRedirectViewController("/invoices/**", "/index")
+//                .setKeepQueryParams(true);
         registry.addViewController("/login").setViewName("login");
     }
 

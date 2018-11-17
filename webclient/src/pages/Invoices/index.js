@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import _isEmpty from "lodash/isEmpty";
-import { Button, Icon, Modal, Table, Select } from "antd";
-import "./Invoices.sass";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import _isEmpty from 'lodash/isEmpty';
+import { Button, Icon, Modal, Table, Select } from 'antd';
+import './Invoices.sass';
 
 const Option = Select.Option;
 
 const columns = [
   {
-    title: "Номер Л/C",
-    dataIndex: "number"
+    title: 'Номер Л/C',
+    dataIndex: 'number'
   }
 ];
 // rowSelection object indicates the need for row selection
@@ -21,7 +21,7 @@ export default class Invoices extends Component {
     visibleInvoices: false,
     visibleCreateInvoice: false,
     confirmLoading: false,
-    newInvoiceTypeCurrency: "",
+    newInvoiceTypeCurrency: '',
     selectedInvoicesWithoutCard: []
   };
 
@@ -30,7 +30,7 @@ export default class Invoices extends Component {
   }
 
   async fetchInvoices() {
-    const { data: invoices } = await axios.get("/api/invoices");
+    const { data: invoices } = await axios.get('/api/invoices');
     this.setState({ invoices });
   }
 
@@ -50,7 +50,7 @@ export default class Invoices extends Component {
       confirmLoading: true
     });
     axios
-      .post("/api/invoices", {
+      .post('/api/invoices', {
         currencyType: newInvoiceTypeCurrency
       })
       .then(() => {
@@ -70,7 +70,7 @@ export default class Invoices extends Component {
       confirmLoading: true
     });
     axios
-      .post("/api/invoices/mark-as-carded", {
+      .post('/api/invoices/mark-as-carded', {
         ids: selectedInvoicesWithoutCard
       })
       .then(() => {
@@ -85,7 +85,7 @@ export default class Invoices extends Component {
   };
 
   handleCancel = state => {
-    console.log("Clicked cancel button");
+    console.log('Clicked cancel button');
     this.setState({
       [state]: false
     });
@@ -103,9 +103,9 @@ export default class Invoices extends Component {
       confirmLoading
     } = this.state;
     const rowSelection = {
-      onChange: (selectedRowKeys) => this.selectRow(selectedRowKeys),
+      onChange: selectedRowKeys => this.selectRow(selectedRowKeys),
       getCheckboxProps: record => ({
-        disabled: record.name === "Disabled User", // Column configuration not to be checked
+        disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name
       })
     };
@@ -114,22 +114,44 @@ export default class Invoices extends Component {
     return (
       <div>
         <header>
-          <h1>Расчетные Л/C</h1>
+          <div className="invoices__header-top">
+            <Link to="/invoices/list">
+              <div className="invoices__logo" />
+            </Link>
+            <div>Patient login</div>
+          </div>
+          <nav className="invoices__navigation">
+            <span className="invoices__navigation-item">Главная</span>
+            <span className="invoices__navigation-item">Выписки</span>
+            <span className="invoices__navigation-item">Платежи</span>
+            <span className="invoices__navigation-item invoices__navigation-item--with-pseudo">
+              Валюта
+            </span>
+            <span className="invoices__navigation-item invoices__navigation-item--selected">
+              Карты
+            </span>
+            <span className="invoices__navigation-item">Кредиты</span>
+            <span className="invoices__navigation-item">Депозиты</span>
+            <span className="invoices__navigation-item">Сообщения</span>
+          </nav>
         </header>
+        <div>
+          <h1>Расчетные Л/C</h1>
+        </div>
         <section>
           <div className="invoices__to-card-invoice">
-            <Button onClick={() => this.showModal("visibleInvoices")}>
+            <Button onClick={() => this.showModal('visibleInvoices')}>
               Привязать Л/C <Icon type="diff" />
             </Button>
-            <Button onClick={() => this.showModal("visibleCreateInvoice")}>
+            <Button onClick={() => this.showModal('visibleCreateInvoice')}>
               Создать Л/C <Icon type="plus-circle" />
             </Button>
             <Modal
               title="Выберите счет"
               visible={visibleInvoices}
-              onOk={() => this.handleCarded("visibleInvoices")}
+              onOk={() => this.handleCarded('visibleInvoices')}
               confirmLoading={confirmLoading}
-              onCancel={() => this.handleCancel("visibleInvoices")}
+              onCancel={() => this.handleCancel('visibleInvoices')}
             >
               <Table
                 rowSelection={rowSelection}
@@ -143,9 +165,9 @@ export default class Invoices extends Component {
             <Modal
               title="Создать счет"
               visible={visibleCreateInvoice}
-              onOk={() => this.handleCreateInvoice("visibleCreateInvoice")}
+              onOk={() => this.handleCreateInvoice('visibleCreateInvoice')}
               confirmLoading={confirmLoading}
-              onCancel={() => this.handleCancel("visibleCreateInvoice")}
+              onCancel={() => this.handleCancel('visibleCreateInvoice')}
             >
               <Select
                 placeholder="Выберите тип валюты"

@@ -1,20 +1,31 @@
-# homyak
-Tech of Madness
-[![Build Status](https://travis-ci.org/testbgg/homyak.svg?branch=master)](https://travis-ci.org/testbgg/homyak)
+# Rosbank Tech.Madness
 
-## Build service
-
-```bash
-gradle asm
-```
+## Команда 6
 
 
-## Credentials
+### Креденции доступа к приложению
 
 user: admin
 password: 123
 
 
+### Сборка приложения
+```bash
+chmod +x asm.sh
 
-## add entities to db
-POST request /fill-db
+./asm.sh
+
+# рядом в корне появится app.jar
+```
+
+### Деплой приложения в docker registry
+```bash
+chmod +x push.sh
+# в файлике push.sh наверзу пишем версию, которую деплоим
+
+# создаем файлик pwd.txt и кладем в него пароль от Dockerhub
+# а в переменной D_LOGIN -- логин
+export D_LOGIN=yattbot
+
+./push.sh
+```

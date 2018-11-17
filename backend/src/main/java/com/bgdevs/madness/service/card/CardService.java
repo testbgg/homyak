@@ -2,11 +2,13 @@ package com.bgdevs.madness.service.card;
 
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
+import com.bgdevs.madness.dao.entities.card.operation.Operation;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.dao.repositories.InvoiceRepository;
+import com.bgdevs.madness.dao.repositories.OperationRepository;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
@@ -17,7 +19,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
@@ -37,6 +41,9 @@ public class CardService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private OperationRepository operationRepository;
+
     @Nonnull
     @Transactional
     public CardModel requestCard(@Nonnull CreateCardModel model) {
@@ -54,11 +61,13 @@ public class CardService {
     }
 
     @Transactional
-    public void addLimitToCard(@Nonnull Long cardId, AddLimitsModel addLimitsModel) {
-        Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
-        card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
-        this.cardRepository.save(card);
+    public void addLimitToCard(@Nonnull AddLimitsModel addLimitsModel) {
+        addLimitsModel.ids.forEach(cardId -> {
+            Card card = this.cardRepository.findById(cardId)
+                    .orElseThrow(() -> new ElementNotFoundException(cardId));
+            card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
+            this.cardRepository.save(card);
+        });
     }
 
     @Transactional
@@ -98,21 +107,19 @@ public class CardService {
     }
 
     @Transactional
-    public void withdrawMoney(@Nonnull Long cardId, BigDecimal amount) {
+    public void executeCallOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
         Card card = this.cardRepository.findById(cardId)
                 .orElseThrow(() -> new ElementNotFoundException(cardId));
-        card.tryWithdrawMoney(amount);
-        this.cardRepository.save(card);
+        Operation operation = card.executeCallOperation(amount, description);
+        this.operationRepository.save(operation);
     }
 
-    @Data
-    public static class AddLimitsModel {
-
-        @Nullable
-        private BigDecimal dayLimit;
-
-        @Nullable
-        private BigDecimal monthLimit;
+    @Transactional
+    public void executePutOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
+        Card card = this.cardRepository.findById(cardId)
+                .orElseThrow(() -> new ElementNotFoundException(cardId));
+        Operation operation = card.executePutOperation(amount, description);
+        this.operationRepository.save(operation);
     }
 
     private Card buildCard(@Nonnull CreateCardModel cardToBeCreated, @Nullable Employee employee, @Nonnull Invoice invoice) {
@@ -123,6 +130,19 @@ public class CardService {
         Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
         card.updateLimits(cardToBeCreated.getDayLimit(), cardToBeCreated.getMonthLimit());
         return card;
+    }
+
+    @Data
+    public static class AddLimitsModel {
+
+        @NotNull
+        private List<Long> ids;
+
+        @Nullable
+        private BigDecimal dayLimit;
+
+        @Nullable
+        private BigDecimal monthLimit;
     }
 
 }

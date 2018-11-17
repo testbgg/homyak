@@ -24,19 +24,6 @@ node {
 }
 
 
-task removeOldFront(type: Delete) {
-    println ">>> removing old front"
-    delete '../backend/src/main/resources/public'
-}
-
-yarn_install.dependsOn removeOldFront
 yarn_build.dependsOn = ['yarn_install']
 
 
-task copySpaToJar(dependsOn: 'yarn_build') {
-    println ">>> copying to jar"
-    copy {
-        from 'build'
-        into '../backend/src/main/resources/public'
-    }
-}
