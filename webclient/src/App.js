@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   Redirect,
   Link
-} from 'react-router-dom';
-import Cards from './pages/Cards';
-import Login from './pages/Login';
-import Invoices from './pages/Invoices';
-import './App.css';
+} from "react-router-dom";
+import Cards from "./pages/Cards";
+import Login from "./pages/Login";
+import Invoices from "./pages/Invoices";
+import Operations from "./pages/Operations";
+import "./App.css";
 
 const Header = () => (
   <header>
     <div className="container invoices__header-top">
-      <Link to="/invoices/list">
+      <Link to="/invoices">
         <div className="invoices__logo" />
       </Link>
       <div>Patient login</div>
@@ -45,12 +46,16 @@ class App extends Component {
         <Router>
           <div>
             <Route>
-              {({ location }) => location.pathname !== '/login' && <Header />}
+              {({ location }) => location.pathname !== "/login" && <Header />}
             </Route>
             <Switch>
               <Route path="/login" component={Login} />
-              <Route path="/invoices/list" component={Invoices} />
-              <Route exact path="/invoices/:invoiceId" component={Cards} />
+              <Route exact path="/invoices" component={Invoices} />
+              <Route path="/invoices/:invoiceId" component={Cards} />
+              <Route
+                path="/cards/:cardId/operations"
+                component={Operations}
+              />
               <Redirect exact from="/" to="/login" />
             </Switch>
           </div>

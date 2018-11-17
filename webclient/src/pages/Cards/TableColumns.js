@@ -1,3 +1,7 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { Icon } from "antd";
+
 const TableColumns = [
   {
     title: "Номер карты",
@@ -6,7 +10,8 @@ const TableColumns = [
   {
     title: "Имя сотрудника",
     dataIndex: "owner",
-    render: owner => owner ? `${owner.firstName} ${owner.secondName}` : 'Карта без владельца'
+    render: owner =>
+      owner ? `${owner.firstName} ${owner.secondName}` : "Карта без владельца"
   },
   {
     title: "Дневной лимит",
@@ -15,6 +20,15 @@ const TableColumns = [
   {
     title: "Месячный лимит",
     dataIndex: "monthLimit"
+  },
+  {
+    title: "Выписка по карте",
+    dataIndex: "key",
+    render: key => (
+      <Link to={`/cards/${key}/operations`}>
+        <Icon type="file-text" />
+      </Link>
+    )
   }
 ];
 

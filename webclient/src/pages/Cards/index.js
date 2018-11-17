@@ -51,7 +51,7 @@ class Cards extends Component {
         <Breadcrumb>
           <Breadcrumb.Item>
             <Link to="../invoices">
-              <a href="./">Профиль</a>
+              Расчетные счета
             </Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Корпоративные карты</Breadcrumb.Item>

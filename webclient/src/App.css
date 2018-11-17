@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .App {
   text-align: center;
@@ -26,4 +26,9 @@
 }
 .ant-breadcrumb {
   margin-bottom: 10px;
+}
+
+h1 {
+  font-weight: bold;
+  color: #7a7a78;
 }
