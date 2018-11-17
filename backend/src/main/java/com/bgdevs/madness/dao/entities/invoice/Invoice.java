@@ -2,7 +2,6 @@ package com.bgdevs.madness.dao.entities.invoice;
 
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.card.Card;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -39,7 +38,6 @@ public class Invoice extends BaseEntity {
     private CurrencyType currencyType;
 
     @OneToMany(mappedBy = "invoice")
-    @Builder.Default
     private List<Card> cards = new ArrayList<>();
 
     public Invoice(Long ownerId, String number, BigDecimal cash, CurrencyType currencyType) {
