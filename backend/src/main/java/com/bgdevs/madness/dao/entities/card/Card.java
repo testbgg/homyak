@@ -29,6 +29,10 @@ public class Card extends BaseEntity {
     @NotNull
     private CardType type;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private CardStatus status = CardStatus.IN_PROGRESS;
+
     @ManyToOne
     @NotNull
     private Employee owner;
@@ -39,10 +43,18 @@ public class Card extends BaseEntity {
 
     @Nullable
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "moneyLimit", column = @Column(name = "day_limit_money")),
+            @AttributeOverride(name = "refreshIn", column = @Column(name = "day_limit_refresh_in"))}
+    )
     private Limit dayLimit;
 
     @Nullable
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "moneyLimit", column = @Column(name = "month_limit_money")),
+            @AttributeOverride(name = "refreshIn", column = @Column(name = "month_limit_refresh_in"))}
+    )
     private Limit monthLimit;
 
     public Card(@Nonnull String number, @Nonnull CardType type, @Nonnull Employee employee,
