@@ -2,7 +2,6 @@ package com.bgdevs.madness.controllers.card;
 
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.service.card.CardService;
-import com.bgdevs.madness.service.card.CardService.AddLimitsModel;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -42,7 +42,7 @@ public class CardController {
 
     @PutMapping("/{cardId}")
     public ResponseEntity<Object> addLimitToCard(@PathVariable Long cardId,
-                                                 @RequestBody AddLimitsModel addLimitsModel) {
+                                                 @RequestBody CardService.AddLimitsModel addLimitsModel) {
         this.cardService.addLimitToCard(cardId, addLimitsModel);
         return ResponseEntity.ok().build();
     }
@@ -71,4 +71,10 @@ public class CardController {
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
 
+    @PostMapping("/{cardId}/withdraw")
+    public ResponseEntity<Object> withdrawMoney(@PathVariable Long cardId,
+                                                @RequestParam("amount") Double amount) {
+        this.cardService.withdrawMoney(cardId, BigDecimal.valueOf(amount));
+        return ResponseEntity.ok("money has been withdrawn");
+    }
 }

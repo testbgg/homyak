@@ -62,7 +62,7 @@ public class DataCreator implements CommandLineRunner {
 
         Invoice cardedInvoice = new Invoice(user.getId(),
                 UUID.randomUUID().toString(),
-                BigDecimal.ZERO,
+                BigDecimal.valueOf(1488),
                 CurrencyType.LOCAL);
         cardedInvoice.markAsCarded();
         cardedInvoice = this.invoiceRepository.save(cardedInvoice);

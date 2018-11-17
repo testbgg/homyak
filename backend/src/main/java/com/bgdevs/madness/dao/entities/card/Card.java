@@ -3,6 +3,10 @@ package com.bgdevs.madness.dao.entities.card;
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
+import com.bgdevs.madness.dao.exceptions.CardIsBlockedException;
+import com.bgdevs.madness.dao.exceptions.DayLimitExceededException;
+import com.bgdevs.madness.dao.exceptions.MonthLimitExceededException;
+import com.bgdevs.madness.dao.exceptions.NegativeMoneyAmountException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -52,8 +56,7 @@ public class Card extends BaseEntity {
     private Invoice invoice;
 
     @Nullable
-    private BigDecimal
-            dayLimit;
+    private BigDecimal dayLimit;
 
     @Nullable
     private BigDecimal monthLimit;
@@ -69,6 +72,13 @@ public class Card extends BaseEntity {
     public static Card request(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                                @Nonnull Invoice invoice) {
         return new Card(number, type, employee, invoice);
+    }
+
+    public void updateLimits(@Nullable BigDecimal dayLimit, @Nullable BigDecimal monthLimit) {
+        if (this.state != CLOSED) {
+            setDayLimit(dayLimit);
+            setMonthLimit(monthLimit);
+        }
     }
 
     public void activate() {
@@ -89,6 +99,44 @@ public class Card extends BaseEntity {
         if (state.canTransitTo(CLOSED)) {
             this.state = CLOSED;
             this.closedDate = LocalDateTime.now();
+        }
+    }
+
+    public boolean dayLimitExceeded() {
+        // TODO implement
+        return false;
+    }
+
+    public boolean monthLimitExceed() {
+        // TODO implement
+        return false;
+    }
+
+    public void tryWithdrawMoney(BigDecimal amount) {
+        checkCardIsBlocked();
+
+        BigDecimal withdrawResult = this.invoice.getCash().subtract(amount);
+        if (withdrawResult.compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeMoneyAmountException();
+
+        } else {
+            checkLimits();
+            this.invoice.setCash(withdrawResult);
+        }
+    }
+
+    private void checkLimits() {
+        if (this.dayLimitExceeded()) {
+            throw new DayLimitExceededException();
+        }
+        if (this.monthLimitExceed()) {
+            throw new MonthLimitExceededException();
+        }
+    }
+
+    private void checkCardIsBlocked() {
+        if (this.state == BLOCKED) {
+            throw new CardIsBlockedException();
         }
     }
 
