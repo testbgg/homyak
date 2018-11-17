@@ -19,8 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static java.util.Collections.emptyList;
-
 /**
  * @author Nikita Shaldenkov
  */
@@ -53,8 +51,12 @@ public class DataCreator implements CommandLineRunner {
                 CurrencyType.LOCAL);
         invoice = this.invoiceRepository.save(invoice);
 
-        Employee employee = new Employee("Vasya", "Pupkin", LocalDate.of(1998, 12, 20),
-                "471232123", emptyList());
+        Employee employee = Employee.builder()
+                .firstName("Vasya")
+                .lastName("Pupkin")
+                .birthdayDate(LocalDate.of(1998, 12, 20))
+                .passportNumber("471232123")
+                .build();
         employee = employeeRepository.save(employee);
 
         Card card = new Card(UUID.randomUUID().toString(),

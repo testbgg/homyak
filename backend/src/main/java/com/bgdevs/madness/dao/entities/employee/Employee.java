@@ -2,8 +2,12 @@ package com.bgdevs.madness.dao.entities.employee;
 
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.card.Card;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -19,8 +23,6 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Employee extends BaseEntity {
 
     @NotNull
@@ -36,7 +38,15 @@ public class Employee extends BaseEntity {
     private String passportNumber;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
-    @Builder.Default
     private List<Card> cards = new ArrayList<>();
+
+    @Builder
+    private Employee(@Nonnull String firstName, @Nonnull String lastName, @Nonnull LocalDate birthdayDate,
+                     @Nonnull String passportNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthdayDate = birthdayDate;
+        this.passportNumber = passportNumber;
+    }
 
 }
