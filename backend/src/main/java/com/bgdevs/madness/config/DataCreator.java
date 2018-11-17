@@ -59,8 +59,7 @@ public class DataCreator implements CommandLineRunner {
                 .build();
         employee = employeeRepository.save(employee);
 
-        Card card = new Card(UUID.randomUUID().toString(),
-                CardType.CREDIT, employee, invoice);
+        Card card = Card.request(UUID.randomUUID().toString(), CardType.CREDIT, employee, invoice);
         this.cardRepository.save(card);
     }
 }

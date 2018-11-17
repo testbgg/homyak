@@ -58,7 +58,7 @@ public class CardService {
         if (type == null) {
             throw new IllegalStateException("Invalid card type: " + type);
         }
-        return new Card(UUID.randomUUID().toString(), type, employee, invoice);
+        return Card.request(UUID.randomUUID().toString(), type, employee, invoice);
     }
 
     @Transactional
