@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Table, Button, Icon, Modal, InputNumber, Select } from "antd";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
-import columns from './TableColumns';
+import columns from "./TableColumns";
 
 export default class CashInOut extends Component {
   state = {
@@ -21,7 +21,7 @@ export default class CashInOut extends Component {
   };
 
   handleOk = () => {
-    const { invoiceId, fetchCards, type } = this.props;
+    const { invoiceId, fetchCards, type, employees } = this.props;
     const {
       newCardForm: { dayLimit, monthLimit, employeeId }
     } = this.state;
@@ -32,7 +32,8 @@ export default class CashInOut extends Component {
       .post("/api/cards", {
         type: type,
         invoiceId: Number(invoiceId),
-        employeeId: employeeId,
+        employeeId:
+          type === "Credit" && !employeeId ? employees[0].id : employeeId,
         dayLimit: dayLimit,
         monthLimit: monthLimit
       })
@@ -91,7 +92,7 @@ export default class CashInOut extends Component {
     this.setState({ selectedRowKeys: rowKeys });
   };
   render() {
-    const { cards, employees } = this.props;
+    const { cards, employees, type } = this.props;
     const {
       visible,
       confirmLoading,
@@ -132,93 +133,98 @@ export default class CashInOut extends Component {
           columns={columns}
           dataSource={cards.map(card => ({ ...card, key: card.id }))}
         />
-        <Modal
-          title="Выпуск новой карты"
-          visible={visible}
-          onOk={this.handleOk}
-          confirmLoading={confirmLoading}
-          onCancel={() => this.handleCancel("visible")}
-        >
-          <div className="cards__form">
-            <div className="cards__form-element">
-              <p>Выберите сотрудника</p>
-              <Select
-                showSearch
-                style={{ width: 200 }}
-                placeholder="Список сотрудников"
-                optionFilterProp="children"
-                onChange={value =>
-                  this.onChange("employeeId", value, "newCardForm")
-                }
-                filterOption={(input, option) =>
-                  option.props.children
-                    .toLowerCase()
-                    .indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {employees.map(({ id, firstName, secondName }) => (
-                  <Select.Option value={id} key={id}>
-                    {`${firstName} ${secondName}`}
-                  </Select.Option>
-                ))}
-              </Select>
+        {visible && (
+          <Modal
+            title="Выпуск новой карты"
+            visible={visible}
+            onOk={this.handleOk}
+            confirmLoading={confirmLoading}
+            onCancel={() => this.handleCancel("visible")}
+          >
+            <div className="cards__form">
+              <div className="cards__form-element">
+                <p>Выберите сотрудника</p>
+                <Select
+                  showSearch
+                  defaultValue={type === "Credit" ? employees[0].id : ""}
+                  style={{ width: 200 }}
+                  placeholder="Список сотрудников"
+                  optionFilterProp="children"
+                  onChange={value =>
+                    this.onChange("employeeId", value, "newCardForm")
+                  }
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {employees.map(({ id, firstName, secondName }) => (
+                    <Select.Option value={id} key={id}>
+                      {`${firstName} ${secondName}`}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+              <div className="cards__form-element">
+                <p>Дневной лимит:</p>
+                <InputNumber
+                  defaultValue={newCardForm.dayLimit}
+                  min={0}
+                  formatter={value => `${value}`}
+                  onChange={value =>
+                    this.onChange("dayLimit", value, "newCardForm")
+                  }
+                />
+              </div>
+              <div className="cards__form-element">
+                <p>Месячный лимит:</p>
+                <InputNumber
+                  defaultValue={newCardForm.monthLimit}
+                  min={0}
+                  formatter={value => `${value}`}
+                  onChange={value =>
+                    this.onChange("monthLimit", value, "newCardForm")
+                  }
+                />
+              </div>
             </div>
-            <div className="cards__form-element">
-              <p>Дневной лимит:</p>
-              <InputNumber
-                defaultValue={newCardForm.dayLimit}
-                min={0}
-                formatter={value => `${value}`}
-                onChange={value =>
-                  this.onChange("dayLimit", value, "newCardForm")
-                }
-              />
+          </Modal>
+        )}
+        {visibleLimits && (
+          <Modal
+            title="Установите лимиты на карту(-ы)"
+            visible={visibleLimits}
+            onOk={this.setLimits}
+            confirmLoading={confirmLoading}
+            onCancel={() => this.handleCancel("visibleLimits")}
+          >
+            <div className="cards__form">
+              <div className="cards__form-element">
+                <p>Дневной лимит:</p>
+                <InputNumber
+                  defaultValue={updateLimits.dayLimit}
+                  min={0}
+                  formatter={value => `${value}`}
+                  onChange={value =>
+                    this.onChange("dayLimit", value, "updateLimits")
+                  }
+                />
+              </div>
+              <div className="cards__form-element">
+                <p>Месячный лимит:</p>
+                <InputNumber
+                  defaultValue={updateLimits.monthLimit}
+                  min={0}
+                  formatter={value => `${value}`}
+                  onChange={value =>
+                    this.onChange("monthLimit", value, "updateLimits")
+                  }
+                />
+              </div>
             </div>
-            <div className="cards__form-element">
-              <p>Месячный лимит:</p>
-              <InputNumber
-                defaultValue={newCardForm.monthLimit}
-                min={0}
-                formatter={value => `${value}`}
-                onChange={value =>
-                  this.onChange("monthLimit", value, "newCardForm")
-                }
-              />
-            </div>
-          </div>
-        </Modal>
-        <Modal
-          title="Установите лимиты на карту(-ы)"
-          visible={visibleLimits}
-          onOk={this.setLimits}
-          confirmLoading={confirmLoading}
-          onCancel={() => this.handleCancel("visibleLimits")}
-        >
-          <div className="cards__form">
-            <div className="cards__form-element">
-              <p>Дневной лимит:</p>
-              <InputNumber
-                defaultValue={updateLimits.dayLimit}
-                min={0}
-                formatter={value => `${value}`}
-                onChange={value =>
-                  this.onChange("dayLimit", value, "updateLimits")
-                }
-              />
-            </div>
-            <div className="cards__form-element">
-              <p>Месячный лимит:</p>
-              <InputNumber
-                defaultValue={updateLimits.monthLimit}
-                min={0}
-                formatter={value => `${value}`}
-                onChange={value =>
-                  this.onChange("monthLimit", value, "updateLimits")
-                }
-              />
-            </div>
-          </div>
-        </Modal>
+          </Modal>
+        )}
       </>
     );
   }

@@ -51,7 +51,7 @@ class Cards extends Component {
       classNames({
         "cards__toggle-button": true,
         "cards__toggle-button-status": true,
-        "cards__toggle-button--active": toggleStatus === status
+        "cards__toggle-button-status--active": toggleStatus === status
       });
     return (
       <div className="container">
