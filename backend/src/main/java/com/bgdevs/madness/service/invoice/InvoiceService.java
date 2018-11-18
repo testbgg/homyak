@@ -99,7 +99,7 @@ public class InvoiceService {
 
         return new Invoice(ownerId,
                 UUID.randomUUID().toString(),
-                invoice.getCash() == null ? ZERO : invoice.getCash(),
+                ZERO,
                 CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 
