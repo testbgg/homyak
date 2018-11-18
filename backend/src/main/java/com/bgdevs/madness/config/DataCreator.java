@@ -24,6 +24,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * @author Nikita Shaldenkov
  */
@@ -49,6 +51,13 @@ public class DataCreator implements CommandLineRunner {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Nonnull
+    private static Employee extractRandomEmployee(@Nonnull List<Employee> employees) {
+        Random random = new Random();
+        int index = random.nextInt(employees.size());
+        return employees.get(index);
+    }
+
     @Override
     public void run(String... args) {
         User user = new User("admin", passwordEncoder.encode("123"), null);
@@ -62,21 +71,31 @@ public class DataCreator implements CommandLineRunner {
 
         Invoice cardedInvoice = new Invoice(user.getId(),
                 UUID.randomUUID().toString(),
-                BigDecimal.valueOf(500000),
+                BigDecimal.valueOf(5000000),
                 CurrencyType.LOCAL);
         cardedInvoice.markAsCarded();
         cardedInvoice = this.invoiceRepository.save(cardedInvoice);
 
-        Employee employee = createEmployee();
-        IntStream.range(0, 10).forEach(index -> createEmployee());
+        List<Employee> employees = IntStream.range(0, 10)
+                .boxed()
+                .map(index -> createEmployee())
+                .collect(toList());
 
-        Card debitCard = Card.request(CardType.DEBIT, employee, cardedInvoice);
-        debitCard.activate();
-        Card creditCard = Card.request(CardType.CREDIT, employee, cardedInvoice);
-        creditCard.activate();
-        creditCard.block();
-        Card cahInOutCard = Card.request(CardType.CASH_IN_OUT, employee, cardedInvoice);
-        this.cardRepository.saveAll(Arrays.asList(debitCard, creditCard, cahInOutCard));
+        Card debitCard1 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
+        debitCard1.activate();
+        Card debitCard2 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
+        Card debitCard3 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
+        debitCard3.block();
+        Card debitCard4 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
+        debitCard4.close();
+        Card creditCard1 = Card.request(CardType.CREDIT, extractRandomEmployee(employees), cardedInvoice);
+        creditCard1.activate();
+        Card creditCard2 = Card.request(CardType.CREDIT, extractRandomEmployee(employees), cardedInvoice);
+        creditCard2.block();
+        Card cashInOutCard = Card.request(CardType.CASH_IN_OUT, extractRandomEmployee(employees), cardedInvoice);
+        cashInOutCard.activate();
+        this.cardRepository.saveAll(Arrays.asList(debitCard1, debitCard2, debitCard3, debitCard4, creditCard1,
+                creditCard2, cashInOutCard));
     }
 
     @Nonnull
