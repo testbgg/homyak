@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -58,6 +59,11 @@ public class InvoiceController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/{invoiceId}/add-funds")
+    public ResponseEntity<Object> increaseInvoiceCash(@PathVariable Long invoiceId, @RequestParam BigDecimal amount) {
+        this.invoiceService.increaseCash(invoiceId, amount);
+        return ResponseEntity.ok(amount.toString() + " was added to invoice with id: " + invoiceId);
+    }
 
     @Data
     public static class IdsWrapper {

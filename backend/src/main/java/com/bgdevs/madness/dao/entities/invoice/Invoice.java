@@ -6,11 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.annotation.Nonnull;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.math.BigDecimal.ZERO;
 
 /**
  * @author Nikita Shaldenkov
@@ -49,5 +52,13 @@ public class Invoice extends BaseEntity {
 
     public void markAsCarded() {
         this.isCard = true;
+    }
+
+    public void increaseCash(@Nonnull BigDecimal amount) {
+        if (amount.compareTo(ZERO) < 0) {
+            throw new IllegalStateException("Unable to add negative money amount to invoice cash.");
+        }
+        this.cash = this.cash.add(amount);
+
     }
 }

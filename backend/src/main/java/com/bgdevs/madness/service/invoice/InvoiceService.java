@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import static com.bgdevs.madness.service.invoice.model.InvoiceModelMapper.toModel;
+import static java.math.BigDecimal.ZERO;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -71,16 +72,23 @@ public class InvoiceService {
     }
 
     @Transactional
-    public InvoiceModel create(CreateInvoiceModel invoice, Long ownerId) {
+    public InvoiceModel create(@Nonnull CreateInvoiceModel invoice, @Nonnull Long ownerId) {
         Invoice created = this.invoiceRepository.save(toEntity(invoice, ownerId));
         return toModel(created);
     }
 
-    private Invoice toEntity(CreateInvoiceModel invoice, Long ownerId) {
+    @Transactional
+    public void increaseCash(@Nonnull Long invoiceId, @Nonnull BigDecimal amount) {
+        this.invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + invoiceId))
+                .increaseCash(amount);
+    }
+
+    private Invoice toEntity(@Nonnull CreateInvoiceModel invoice, @Nonnull Long ownerId) {
 
         return new Invoice(ownerId,
                 UUID.randomUUID().toString(),
-                BigDecimal.ZERO,
+                invoice.getCash() == null ? ZERO : invoice.getCash(),
                 CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 

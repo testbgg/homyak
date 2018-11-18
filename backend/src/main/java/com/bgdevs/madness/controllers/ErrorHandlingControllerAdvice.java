@@ -4,6 +4,7 @@ import com.bgdevs.madness.dao.exceptions.CardIsBlockedException;
 import com.bgdevs.madness.dao.exceptions.DayLimitExceededException;
 import com.bgdevs.madness.dao.exceptions.MonthLimitExceededException;
 import com.bgdevs.madness.dao.exceptions.NegativeMoneyAmountException;
+import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,18 @@ public class ErrorHandlingControllerAdvice {
     public ResponseEntity<Object> catchNegativeMoneyAmountException(
             NegativeMoneyAmountException ex) {
         return ResponseEntity.badRequest().body("Unable to set negative value to money amount.");
+    }
+
+    @ExceptionHandler(ElementNotFoundException.class)
+    public ResponseEntity<Object> catchElementNotFoundException(
+            ElementNotFoundException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Object> catchIllegalStateException(
+            IllegalStateException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
 }
