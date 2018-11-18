@@ -29,3 +29,9 @@ export D_LOGIN=yattbot
 
 ./push.sh
 ```
+
+
+## Nginx
+
+jinx lies nearby
+

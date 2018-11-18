@@ -13,10 +13,19 @@ services:
     - ./postgres-data-bgdevs:/var/lib/postgresql/data
 
   service:
-    image: yattbot/techmad:7
+    image: yattbot/techmad:9
     environment:
-      SPRING_PROFILES_ACTIVE: postgres
+      SPRING_PROFILES_ACTIVE: docker
     ports:
-    - 80:8080
+    - 8080:8080
     depends_on:
     - postgresql
+
+  nginx:
+    image: yattbot/jinx:11
+    ports:
+    - 80:80
+    - 443:443
+    restart: always
+    depends_on:
+    - service
