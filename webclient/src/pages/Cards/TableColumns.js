@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, Route } from 'react-router-dom';
-import { Icon } from 'antd';
-import day from 'dayjs';
+import React from "react";
+import { Link, Route } from "react-router-dom";
+import { Icon, Popconfirm } from "antd";
+import day from "dayjs";
 
 const getStatus = status => {
   switch (status) {
@@ -18,7 +18,7 @@ const getStatus = status => {
   }
 };
 
-const TableColumns = [
+const TableColumns = onReIssue => [
   {
     title: 'Номер карты',
     dataIndex: 'number'
@@ -63,6 +63,21 @@ const TableColumns = [
           </Link>
         )}
       </Route>
+    )
+  },
+  {
+    title: "Перевыпуск карты",
+    dataIndex: "key",
+    key: "reissue",
+    render: key => (
+      <Popconfirm
+        title="Вы действительно хотите перевыпустить карту?"
+        onConfirm={() => onReIssue(key)}
+        okText="Да"
+        cancelText="Нет"
+      >
+        <Icon type="reload" />
+      </Popconfirm>
     )
   }
 ];
