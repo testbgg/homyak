@@ -43,6 +43,7 @@ export default class CashInOut extends Component {
           visible: false,
           confirmLoading: false
         });
+        message.success("Заявка на выпуск карты подана");
       });
   };
 
@@ -67,6 +68,7 @@ export default class CashInOut extends Component {
           visibleLimits: false,
           confirmLoading: false
         });
+        message.success('Лимиты установлены')
       });
   };
 
