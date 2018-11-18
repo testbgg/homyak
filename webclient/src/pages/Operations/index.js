@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Table } from 'antd';
-import { Breadcrumb } from 'antd';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import columns from './TableColumns';
+import React, { Component } from "react";
+import { Table } from "antd";
+import { Breadcrumb } from "antd";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import columns from "./TableColumns";
 
 export default class Operations extends Component {
   state = {
@@ -16,11 +16,6 @@ export default class Operations extends Component {
         params: { cardId }
       }
     } = this.props;
-    await axios.post(`/api/operations/call`, {
-      cardIds: [cardId],
-      amount: 100,
-      description: 'Оплата'
-    });
     const { data: operations } = await axios.get(
       `/api/cards/${cardId}/operations`
     );

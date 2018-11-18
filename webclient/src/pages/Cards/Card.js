@@ -109,8 +109,8 @@ export default class CashInOut extends Component {
     const rowSelection = {
       onChange: selectedRowKeys => this.onSelect(selectedRowKeys),
       getCheckboxProps: record => ({
-        disabled: record.name === "Disabled User", // Column configuration not to be checked
-        name: record.name
+        disabled: record.state === "CLOSED", // Column configuration not to be checked
+        state: record.state
       })
     };
     const rowSelected = _isEmpty(selectedRowKeys);
