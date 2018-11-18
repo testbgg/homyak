@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Icon } from "antd";
+import { Icon, Popconfirm } from "antd";
 import day from "dayjs";
 
 const getStatus = status => {
@@ -18,7 +18,7 @@ const getStatus = status => {
   }
 };
 
-const TableColumns = [
+const TableColumns = onReIssue => [
   {
     title: "Номер карты",
     dataIndex: "number"
@@ -54,6 +54,21 @@ const TableColumns = [
       <Link to={`/cards/${key}/operations`}>
         <Icon type="file-text" />
       </Link>
+    )
+  },
+  {
+    title: "Перевыпуск карты",
+    dataIndex: "key",
+    key: "reissue",
+    render: key => (
+      <Popconfirm
+        title="Вы действительно хотите перевыпустить карту?"
+        onConfirm={() => onReIssue(key)}
+        okText="Да"
+        cancelText="Нет"
+      >
+        <Icon type="reload" />
+      </Popconfirm>
     )
   }
 ];

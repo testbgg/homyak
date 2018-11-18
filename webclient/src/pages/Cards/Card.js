@@ -70,6 +70,10 @@ export default class CashInOut extends Component {
       });
   };
 
+  onReIssue = cardId => {
+    axios.post(`/api/cards/${cardId}/reissue`);
+  };
+
   handleCancel = modalVisible => {
     this.setState({
       [modalVisible]: false
@@ -130,7 +134,7 @@ export default class CashInOut extends Component {
         </div>
         <Table
           rowSelection={rowSelection}
-          columns={columns}
+          columns={columns(this.onReIssue)}
           dataSource={cards.map(card => ({ ...card, key: card.id }))}
         />
         {visible && (
