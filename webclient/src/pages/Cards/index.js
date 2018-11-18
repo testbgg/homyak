@@ -130,7 +130,7 @@ class Cards extends Component {
               <Card
                 pathname={pathname}
                 cards={cards.filter(
-                  card => card.type === "Cash in/out" && card.state === status
+                  card => card.type === "Cash in/out" && status.includes(card.state)
                 )}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
