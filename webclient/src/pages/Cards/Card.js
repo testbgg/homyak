@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Table, Button, Icon, Modal, InputNumber, Select } from "antd";
-import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
-import columns from "./TableColumns";
+import React, { Component } from 'react';
+import { Table, Button, Icon, Modal, InputNumber, Select, message } from 'antd';
+import _isEmpty from 'lodash/isEmpty';
+import axios from 'axios';
+import columns from './TableColumns';
 
 export default class CashInOut extends Component {
   state = {
@@ -29,11 +29,11 @@ export default class CashInOut extends Component {
       confirmLoading: true
     });
     axios
-      .post("/api/cards", {
+      .post('/api/cards', {
         type: type,
         invoiceId: Number(invoiceId),
         employeeId:
-          type === "Credit" && !employeeId ? employees[0].id : employeeId,
+          type === 'Credit' && !employeeId ? employees[0].id : employeeId,
         dayLimit: dayLimit,
         monthLimit: monthLimit
       })
@@ -43,6 +43,7 @@ export default class CashInOut extends Component {
           visible: false,
           confirmLoading: false
         });
+        message.success("Заявка на выпуск карты подана");
       });
   };
 
@@ -56,7 +57,7 @@ export default class CashInOut extends Component {
       confirmLoading: true
     });
     axios
-      .put("/api/cards/limits", {
+      .put('/api/cards/limits', {
         ids: selectedRowKeys,
         dayLimit: dayLimit,
         monthLimit: monthLimit
@@ -67,12 +68,16 @@ export default class CashInOut extends Component {
           visibleLimits: false,
           confirmLoading: false
         });
+        message.success('Лимиты установлены')
       });
   };
 
   onReIssue = cardId => {
     const { fetchCards } = this.props;
-    axios.post(`/api/cards/${cardId}/reissue`).then(() => fetchCards());
+    axios.post(`/api/cards/${cardId}/reissue`).then(() => {
+      fetchCards();
+      message.success('Заявка на перевыпуск карты оформлена');
+    });
   };
 
   handleCancel = modalVisible => {
@@ -109,7 +114,7 @@ export default class CashInOut extends Component {
     const rowSelection = {
       onChange: selectedRowKeys => this.onSelect(selectedRowKeys),
       getCheckboxProps: record => ({
-        disabled: record.state === "CLOSED", // Column configuration not to be checked
+        disabled: record.state === 'CLOSED', // Column configuration not to be checked
         state: record.state
       })
     };
@@ -119,18 +124,19 @@ export default class CashInOut extends Component {
         <div className="cards__buttons">
           <Button
             className="cards__button"
-            onClick={() => this.showModal("visible")}
+            onClick={() => this.showModal('visible')}
+            type="primary"
           >
             Выпуск новой карты
             <Icon type="plus-circle" />
           </Button>
           <Button
             className="cards__button"
-            onClick={() => this.showModal("visibleLimits")}
+            onClick={() => this.showModal('visibleLimits')}
             disabled={rowSelected}
           >
             Установить лимиты на карту(-ы)
-            <Icon type="plus-circle" />
+            <Icon type="lock" />
           </Button>
         </div>
         <Table
@@ -144,19 +150,19 @@ export default class CashInOut extends Component {
             visible={visible}
             onOk={this.handleOk}
             confirmLoading={confirmLoading}
-            onCancel={() => this.handleCancel("visible")}
+            onCancel={() => this.handleCancel('visible')}
           >
             <div className="cards__form">
               <div className="cards__form-element">
                 <p>Выберите сотрудника</p>
                 <Select
                   showSearch
-                  defaultValue={type === "Credit" ? employees[0].id : ""}
+                  defaultValue={type === 'Credit' ? employees[0].id : ''}
                   style={{ width: 200 }}
                   placeholder="Список сотрудников"
                   optionFilterProp="children"
                   onChange={value =>
-                    this.onChange("employeeId", value, "newCardForm")
+                    this.onChange('employeeId', value, 'newCardForm')
                   }
                   filterOption={(input, option) =>
                     option.props.children
@@ -178,7 +184,7 @@ export default class CashInOut extends Component {
                   min={0}
                   formatter={value => `${value}`}
                   onChange={value =>
-                    this.onChange("dayLimit", value, "newCardForm")
+                    this.onChange('dayLimit', value, 'newCardForm')
                   }
                 />
               </div>
@@ -189,7 +195,7 @@ export default class CashInOut extends Component {
                   min={0}
                   formatter={value => `${value}`}
                   onChange={value =>
-                    this.onChange("monthLimit", value, "newCardForm")
+                    this.onChange('monthLimit', value, 'newCardForm')
                   }
                 />
               </div>
@@ -202,7 +208,7 @@ export default class CashInOut extends Component {
             visible={visibleLimits}
             onOk={this.setLimits}
             confirmLoading={confirmLoading}
-            onCancel={() => this.handleCancel("visibleLimits")}
+            onCancel={() => this.handleCancel('visibleLimits')}
           >
             <div className="cards__form">
               <div className="cards__form-element">
@@ -212,7 +218,7 @@ export default class CashInOut extends Component {
                   min={0}
                   formatter={value => `${value}`}
                   onChange={value =>
-                    this.onChange("dayLimit", value, "updateLimits")
+                    this.onChange('dayLimit', value, 'updateLimits')
                   }
                 />
               </div>
@@ -223,7 +229,7 @@ export default class CashInOut extends Component {
                   min={0}
                   formatter={value => `${value}`}
                   onChange={value =>
-                    this.onChange("monthLimit", value, "updateLimits")
+                    this.onChange('monthLimit', value, 'updateLimits')
                   }
                 />
               </div>

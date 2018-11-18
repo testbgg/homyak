@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import _isEmpty from 'lodash/isEmpty';
-import { Button, Icon, Modal, Table, Select } from 'antd';
-import './Invoices.sass';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import _isEmpty from "lodash/isEmpty";
+import { Button, Icon, Modal, Table, Select, Popconfirm, message } from "antd";
+import "./Invoices.sass";
 
 const Option = Select.Option;
 
 const columns = [
   {
-    title: 'Номер Л/C',
-    dataIndex: 'number'
+    title: "Номер расчетного счета",
+    dataIndex: "number"
   }
 ];
 // rowSelection object indicates the need for row selection
@@ -21,8 +21,9 @@ export default class Invoices extends Component {
     visibleInvoices: false,
     visibleCreateInvoice: false,
     confirmLoading: false,
-    newInvoiceTypeCurrency: '',
-    selectedInvoicesWithoutCard: []
+    newInvoiceTypeCurrency: "",
+    selectedInvoicesWithoutCard: [],
+    visiblePopup: false
   };
 
   async componentDidMount() {
@@ -30,7 +31,7 @@ export default class Invoices extends Component {
   }
 
   async fetchInvoices() {
-    const { data: invoices } = await axios.get('/api/invoices');
+    const { data: invoices } = await axios.get("/api/invoices");
     this.setState({ invoices });
   }
 
@@ -50,7 +51,7 @@ export default class Invoices extends Component {
       confirmLoading: true
     });
     axios
-      .post('/api/invoices', {
+      .post("/api/invoices", {
         currencyType: newInvoiceTypeCurrency
       })
       .then(() => {
@@ -59,27 +60,37 @@ export default class Invoices extends Component {
             [modalVisible]: false,
             confirmLoading: false
           },
-          () => this.fetchInvoices.call(this)
+          () => {
+            this.fetchInvoices.call(this);
+            message.success("Счет создан");
+          }
         );
       });
   };
 
+  handlePopup = () => {
+    this.setState({ visiblePopup: true });
+  };
   handleCarded = modalVisible => {
     const { selectedInvoicesWithoutCard } = this.state;
     this.setState({
       confirmLoading: true
     });
     axios
-      .post('/api/invoices/mark-as-carded', {
+      .post("/api/invoices/mark-as-carded", {
         ids: selectedInvoicesWithoutCard
       })
       .then(() => {
         this.setState(
           {
             [modalVisible]: false,
-            confirmLoading: false
+            confirmLoading: false,
+            visiblePopup: false
           },
-          () => this.fetchInvoices.call(this)
+          () => {
+            this.fetchInvoices.call(this);
+            message.success("Расчетный счет успешно переведен в карточные");
+          }
         );
       });
   };
@@ -87,6 +98,12 @@ export default class Invoices extends Component {
   handleCancel = state => {
     this.setState({
       [state]: false
+    });
+  };
+
+  handleClosePopup = () => {
+    this.setState({
+      visiblePopup: false
     });
   };
 
@@ -99,12 +116,13 @@ export default class Invoices extends Component {
       invoices,
       visibleInvoices,
       visibleCreateInvoice,
-      confirmLoading
+      confirmLoading,
+      selectedInvoicesWithoutCard
     } = this.state;
     const rowSelection = {
       onChange: selectedRowKeys => this.selectRow(selectedRowKeys),
       getCheckboxProps: record => ({
-        disabled: record.name === 'Disabled User', // Column configuration not to be checked
+        disabled: record.name === "Disabled User", // Column configuration not to be checked
         name: record.name
       })
     };
@@ -113,48 +131,64 @@ export default class Invoices extends Component {
     return (
       <div className="container">
         <div>
-          <h1>Расчетные Л/C</h1>
+          <h1>Карточные Р/C</h1>
         </div>
         <section>
           <div className="invoices__to-card-invoice">
-            <Button onClick={() => this.showModal('visibleInvoices')}>
-              Привязать Л/C <Icon type="diff" />
+            <Button onClick={() => this.showModal("visibleInvoices")}>
+              Привязать расчетный счет <Icon type="diff" />
             </Button>
-            <Button onClick={() => this.showModal('visibleCreateInvoice')}>
-              Создать Л/C <Icon type="plus-circle" />
+            <Button onClick={() => this.showModal("visibleCreateInvoice")}>
+              Создать расчетный счет <Icon type="plus-circle" />
             </Button>
-            <Modal
-              title="Выберите счет"
-              visible={visibleInvoices}
-              onOk={() => this.handleCarded('visibleInvoices')}
-              confirmLoading={confirmLoading}
-              onCancel={() => this.handleCancel('visibleInvoices')}
-            >
-              <Table
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={invoicesWithoutCarded.map(invoice => ({
-                  ...invoice,
-                  key: invoice.id
-                }))}
-              />
-            </Modal>
-            <Modal
-              title="Создать счет"
-              visible={visibleCreateInvoice}
-              onOk={() => this.handleCreateInvoice('visibleCreateInvoice')}
-              confirmLoading={confirmLoading}
-              onCancel={() => this.handleCancel('visibleCreateInvoice')}
-            >
-              <Select
-                placeholder="Выберите тип валюты"
-                style={{ width: 220 }}
-                onChange={this.handleChange}
+            {visibleInvoices && (
+              <Modal
+                title="Выберите счет"
+                visible={visibleInvoices}
+                onOk={this.handlePopup}
+                confirmLoading={confirmLoading}
+                onCancel={() => this.handleCancel("visibleInvoices")}
+                okButtonProps={{
+                  disabled: _isEmpty(selectedInvoicesWithoutCard)
+                }}
               >
-                <Option value="LOCAL">LOCAL</Option>
-                <Option value="FOREIGN">FOREIGN</Option>
-              </Select>
-            </Modal>
+                <Table
+                  rowSelection={rowSelection}
+                  columns={columns}
+                  dataSource={invoicesWithoutCarded.map(invoice => ({
+                    ...invoice,
+                    key: invoice.id
+                  }))}
+                />
+              </Modal>
+            )}
+            {visibleCreateInvoice && (
+              <Modal
+                title="Создать счет"
+                visible={visibleCreateInvoice}
+                onOk={() => this.handleCreateInvoice("visibleCreateInvoice")}
+                confirmLoading={confirmLoading}
+                onCancel={() => this.handleCancel("visibleCreateInvoice")}
+              >
+                <Select
+                  placeholder="Выберите тип валюты"
+                  style={{ width: 220 }}
+                  onChange={this.handleChange}
+                >
+                  <Option value="LOCAL">LOCAL</Option>
+                  <Option value="FOREIGN">FOREIGN</Option>
+                </Select>
+              </Modal>
+            )}
+            <Popconfirm
+              title="Вы согласны с правилами перевода Р/C в карточные?"
+              visible={this.state.visiblePopup}
+              onConfirm={() => this.handleCarded("visibleInvoices")}
+              onCancel={this.handleClosePopup}
+              okText="Да"
+              cancelText="Нет"
+            />
+            <br />
           </div>
           {!_isEmpty(invoicesCarded) && (
             <div className="row invoices__list">
@@ -166,7 +200,7 @@ export default class Invoices extends Component {
                     >
                       <div className="invoices__invoice" key={id}>
                         <div className="invoices__invoice-number">
-                          Л/C № {number}
+                          Р/C № {number}
                         </div>
                         <div className="invoices__invoice-cash">
                           На счету: {cash}
