@@ -12,7 +12,7 @@ class Cards extends Component {
     type: "debit",
     cards: [],
     employees: [],
-    status: "ACTIVE"
+    status: ["ACTIVE", "CLOSED", "BLOCKED"]
   };
 
   componentDidMount() {
@@ -51,7 +51,7 @@ class Cards extends Component {
       classNames({
         "cards__toggle-button": true,
         "cards__toggle-button-status": true,
-        "cards__toggle-button-status--active": toggleStatus === status
+        "cards__toggle-button-status--active": status.includes(toggleStatus)
       });
     return (
       <div className="container">
@@ -88,13 +88,15 @@ class Cards extends Component {
           <div className="cards__toggler">
             <div
               className={toggleClassesStatus("ACTIVE")}
-              onClick={() => this.onChange("ACTIVE", "status")}
+              onClick={() =>
+                this.onChange(["ACTIVE", "BLOCKED", "CLOSED"], "status")
+              }
             >
               Просмотр выданных карт
             </div>
             <div
               className={toggleClassesStatus("REQUESTED")}
-              onClick={() => this.onChange("REQUESTED", "status")}
+              onClick={() => this.onChange(["REQUESTED"], "status")}
             >
               Просмотр заказанных карт
             </div>
@@ -104,7 +106,7 @@ class Cards extends Component {
               <Card
                 pathname={pathname}
                 cards={cards.filter(
-                  card => card.type === "Credit" && card.state === status
+                  card => card.type === "Credit" && status.includes(card.state)
                 )}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
@@ -116,7 +118,7 @@ class Cards extends Component {
               <Card
                 pathname={pathname}
                 cards={cards.filter(
-                  card => card.type === "Debit" && card.state === status
+                  card => card.type === "Debit" && status.includes(card.state)
                 )}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
