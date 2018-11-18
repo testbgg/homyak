@@ -1,6 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "antd";
+import day from "dayjs";
+
+const getStatus = status => {
+  switch (status) {
+    case "ACTIVE":
+      return "Активна";
+    case "BLOCKED":
+      return "Заблокирована";
+    case "REQUESTED":
+      return "Заказана";
+    case "CLOSED":
+      return "Закрыта";
+    default:
+      return;
+  }
+};
 
 const TableColumns = [
   {
@@ -22,7 +38,17 @@ const TableColumns = [
     dataIndex: "monthLimit"
   },
   {
-    title: "Выписка по карте",
+    title: "Статус",
+    dataIndex: "state",
+    render: state => getStatus(state)
+  },
+  {
+    title: "Срок действия",
+    dataIndex: "validUntil",
+    render: validUntil => (validUntil ? day(validUntil).format("MM/YYYY") : "-")
+  },
+  {
+    title: "Выписка",
     dataIndex: "key",
     render: key => (
       <Link to={`/cards/${key}/operations`}>
