@@ -20,7 +20,7 @@ public class CardModelMapper {
         return new CardModel(card.getId(), card.getNumber(), card.getType(),
                 toOwnerModel(card.getOwner()), toInvoiceModel(card.getInvoice()),
                 card.getOpenedDate(), card.getClosedDate(),
-                card.getDayLimit(), card.getMonthLimit());
+                card.getCreditLimit(), card.getDayLimit(), card.getMonthLimit());
     }
 
     @Nullable

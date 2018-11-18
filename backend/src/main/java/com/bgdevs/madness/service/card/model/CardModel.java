@@ -32,6 +32,9 @@ public class CardModel {
     private LocalDateTime closedDate;
 
     @Nullable
+    private BigDecimal creditLimit;
+
+    @Nullable
     private BigDecimal dayLimit;
 
     @Nullable
