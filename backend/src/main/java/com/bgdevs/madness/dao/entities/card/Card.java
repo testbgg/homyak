@@ -120,8 +120,15 @@ public class Card extends BaseEntity {
 
     public void updateLimits(@Nullable BigDecimal dayLimit, @Nullable BigDecimal monthLimit) {
         if (this.state != CLOSED) {
+            limitsAreValid(dayLimit, monthLimit);
             setDayLimit(dayLimit);
             setMonthLimit(monthLimit);
+        }
+    }
+
+    private void limitsAreValid(@Nullable BigDecimal dayLimit, @Nullable BigDecimal monthLimit) {
+        if (dayLimit != null && monthLimit != null && dayLimit.compareTo(monthLimit) > 0) {
+            throw new HomyakException("Day and month limits are not valid.");
         }
     }
 
