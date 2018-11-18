@@ -44,7 +44,12 @@ export default class CashInOut extends Component {
           confirmLoading: false
         });
         message.success("Заявка на выпуск карты подана");
-      });
+      }).catch(error => {
+        this.setState({
+          confirmLoading: false
+        });
+        message.error("Не удалось оформить заявку");
+      });;
   };
 
   setLimits = () => {
@@ -69,6 +74,12 @@ export default class CashInOut extends Component {
           confirmLoading: false
         });
         message.success("Лимиты установлены");
+      })
+      .catch(error => {
+        this.setState({
+          confirmLoading: false
+        });
+        message.error("Не удалось обновить лимиты");
       });
   };
 
@@ -186,7 +197,6 @@ export default class CashInOut extends Component {
                 <InputNumber
                   defaultValue={newCardForm.dayLimit}
                   min={0}
-                  max={newCardForm.monthLimit}
                   formatter={value => `${value}`}
                   onChange={value =>
                     this.onChange("dayLimit", value, "newCardForm")
@@ -221,7 +231,6 @@ export default class CashInOut extends Component {
                 <InputNumber
                   defaultValue={updateLimits.dayLimit}
                   min={0}
-                  max={updateLimits.monthLimit}
                   formatter={value => `${value}`}
                   onChange={value =>
                     this.onChange("dayLimit", value, "updateLimits")
