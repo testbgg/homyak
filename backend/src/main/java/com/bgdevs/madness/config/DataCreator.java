@@ -30,9 +30,9 @@ import java.util.stream.IntStream;
 @Service
 public class DataCreator implements CommandLineRunner {
 
-    private static List<String> firstNames = Arrays.asList("Vasiliy", "Ivan", "Petr", "Oleg", "Alexey");
+    private static List<String> firstNames = Arrays.asList("Ilya", "Alexander", "Ivan", "Denis", "Oleg", "Alexey", "Valeriy", "Anton", "Nikita", "Mikhail", "Ruslan");
 
-    private static List<String> lastNames = Arrays.asList("Ivanov", "Goncharov", "Petrov", "Novikov");
+    private static List<String> lastNames = Arrays.asList("Vindman", "Ovchinnikov", "Ivanov", "Goncharov", "Petrov", "Novikov", "Pechenkin", "Sotin", "Polyakov", );
 
     @Autowired
     private UserRepository userRepository;
