@@ -7,7 +7,6 @@ import com.bgdevs.madness.service.card.CardService;
 import com.bgdevs.madness.service.card.CardService.AddLimitsModel;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
-import com.bgdevs.madness.service.operation.ExecuteCardOperationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,17 +83,4 @@ public class CardController {
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
 
-    @PostMapping("/{cardId}/operations/call")
-    public ResponseEntity<Object> callOperation(@PathVariable Long cardId,
-                                                @RequestBody ExecuteCardOperationModel model) {
-        this.cardService.executeCallOperation(cardId, model.getAmount(), model.getDescription());
-        return ResponseEntity.ok("Call operation executed for card with id: " + cardId);
-    }
-
-    @PostMapping("/{cardId}/operations/put")
-    public ResponseEntity<Object> putOperation(@PathVariable Long cardId,
-                                               @RequestBody ExecuteCardOperationModel model) {
-        this.cardService.executePutOperation(cardId, model.getAmount(), model.getDescription());
-        return ResponseEntity.ok("Put operation executed for card with id: " + cardId);
-    }
 }
