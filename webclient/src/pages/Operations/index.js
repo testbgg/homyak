@@ -13,7 +13,7 @@ export default class Operations extends Component {
         params: { cardId }
       }
     } = this.props;
-    await axios.post(`/api/cards/${cardId}/call`, { amount: 100, description: 'Оплата'});
+    await axios.post(`/api/operations/call`, { cardIds: [cardId], amount: 100, description: 'Оплата'});
     const { data: operations } = await axios.get(
       `/api/cards/${cardId}/operations`
     );
