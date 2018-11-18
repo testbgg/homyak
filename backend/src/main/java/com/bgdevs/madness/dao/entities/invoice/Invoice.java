@@ -7,6 +7,7 @@ import com.bgdevs.madness.dao.exceptions.UnablePerformTransferException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
 import javax.persistence.*;
@@ -43,9 +44,9 @@ public class Invoice extends BaseEntity {
     @OneToMany(mappedBy = "invoice")
     private List<Card> cards = new ArrayList<>();
 
-    public Invoice(Long ownerId, String number, BigDecimal cash, CurrencyType currencyType) {
+    public Invoice(Long ownerId, BigDecimal cash, CurrencyType currencyType) {
         this.ownerId = ownerId;
-        this.number = number;
+        this.number = generateNumber();
         this.cash = cash;
         this.currencyType = currencyType;
     }
@@ -65,6 +66,11 @@ public class Invoice extends BaseEntity {
             throw new UnablePerformTransferException("Unable to extract " + amount + " from invoice with id: " + getId());
         }
         this.cash = this.cash.subtract(amount);
+    }
+
+    @Nonnull
+    private String generateNumber() {
+        return RandomStringUtils.random(10, false, true);
     }
 
     private void operationsAreAvailable() {

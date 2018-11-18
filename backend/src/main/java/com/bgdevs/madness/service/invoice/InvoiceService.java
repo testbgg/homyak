@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import static com.bgdevs.madness.service.invoice.model.InvoiceModelMapper.toModel;
@@ -99,10 +98,7 @@ public class InvoiceService {
 
     private Invoice toEntity(@Nonnull CreateInvoiceModel invoice, @Nonnull Long ownerId) {
 
-        return new Invoice(ownerId,
-                UUID.randomUUID().toString(),
-                ZERO,
-                CurrencyType.valueOf(invoice.getCurrencyType()));
+        return new Invoice(ownerId, ZERO, CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 
     @Data

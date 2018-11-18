@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -34,13 +35,13 @@ public class OperationController {
     }
 
     @PostMapping("api/operations/call")
-    public ResponseEntity<Object> callOperation(@RequestBody ExecuteCardOperationModel model) {
+    public ResponseEntity<Object> callOperation(@Valid @RequestBody ExecuteCardOperationModel model) {
         this.operationService.executeCallOperations(model.getCardIds(), model.getAmount(), model.getDescription());
         return ResponseEntity.ok("Call operations executed for cards with ids: " + model.getCardIds());
     }
 
     @PostMapping("api/operations/put")
-    public ResponseEntity<Object> putOperation(@RequestBody ExecuteCardOperationModel model) {
+    public ResponseEntity<Object> putOperation(@Valid @RequestBody ExecuteCardOperationModel model) {
         this.operationService.executePutOperations(model.getCardIds(), model.getAmount(), model.getDescription());
         return ResponseEntity.ok("Put operations executed for cards with ids: " + model.getCardIds());
     }

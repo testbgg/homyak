@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.transaction.Transactional;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
@@ -131,6 +132,14 @@ public class CardService {
 
         @Nullable
         private BigDecimal monthLimit;
+
+        @AssertTrue(message = "Day and month limits are not valid.")
+        private boolean isValid() {
+            if (this.dayLimit != null && this.monthLimit != null) {
+                return this.dayLimit.compareTo(this.monthLimit) < 0;
+            }
+            return true;
+        }
     }
 
     @Data

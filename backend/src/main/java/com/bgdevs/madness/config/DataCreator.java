@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static com.bgdevs.madness.dao.entities.card.CardType.*;
@@ -66,13 +65,11 @@ public class DataCreator implements CommandLineRunner {
         user = this.userRepository.save(user);
 
         Invoice initInvoice = new Invoice(user.getId(),
-                UUID.randomUUID().toString(),
                 BigDecimal.ZERO,
                 CurrencyType.FOREIGN);
         this.invoiceRepository.save(initInvoice);
 
         Invoice cardedInvoice = new Invoice(user.getId(),
-                UUID.randomUUID().toString(),
                 BigDecimal.valueOf(5000000),
                 CurrencyType.LOCAL);
         cardedInvoice.markAsCarded();
