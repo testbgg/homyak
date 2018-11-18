@@ -56,6 +56,16 @@ public class CardService {
     }
 
     @Transactional
+    public void updateCreditLimits(@Nonnull UpdateCreditLimits model) {
+        model.ids.forEach(cardId -> {
+            Card card = this.cardRepository.findById(cardId)
+                    .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id: " + cardId));
+            card.updateCreditLimit(model.creditLimit);
+            this.cardRepository.save(card);
+        });
+    }
+
+    @Transactional
     public void addLimitToCard(@Nonnull AddLimitsModel addLimitsModel) {
         addLimitsModel.ids.forEach(cardId -> {
             Card card = this.cardRepository.findById(cardId)
@@ -122,6 +132,17 @@ public class CardService {
 
         @Nullable
         private BigDecimal monthLimit;
+    }
+
+    @Data
+    public static class UpdateCreditLimits {
+
+        @NotNull
+        private List<Long> ids;
+
+        @NotNull
+        private BigDecimal creditLimit;
+
     }
 
 }

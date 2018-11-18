@@ -79,17 +79,10 @@ public class InvoiceService {
 
     @Transactional
     public void increaseCash(@Nonnull Long invoiceId, @Nonnull BigDecimal amount) {
-        this.invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + invoiceId))
-                .increaseCash(amount);
-    }
-
-    private Invoice toEntity(@Nonnull CreateInvoiceModel invoice, @Nonnull Long ownerId) {
-
-        return new Invoice(ownerId,
-                UUID.randomUUID().toString(),
-                invoice.getCash() == null ? ZERO : invoice.getCash(),
-                CurrencyType.valueOf(invoice.getCurrencyType()));
+        Invoice invoice = this.invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + invoiceId));
+        invoice.increaseCash(amount);
+        this.invoiceRepository.save(invoice);
     }
 
     @Transactional
@@ -100,6 +93,14 @@ public class InvoiceService {
             invoice.markAsCarded();
             this.invoiceRepository.save(invoice);
         });
+    }
+
+    private Invoice toEntity(@Nonnull CreateInvoiceModel invoice, @Nonnull Long ownerId) {
+
+        return new Invoice(ownerId,
+                UUID.randomUUID().toString(),
+                invoice.getCash() == null ? ZERO : invoice.getCash(),
+                CurrencyType.valueOf(invoice.getCurrencyType()));
     }
 
 }

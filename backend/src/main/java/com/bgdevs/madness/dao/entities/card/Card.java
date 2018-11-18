@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.bgdevs.madness.dao.entities.card.CardState.*;
+import static com.bgdevs.madness.dao.entities.card.CardType.CREDIT;
 
 /**
  * @author Nikita Shaldenkov
@@ -31,6 +32,10 @@ import static com.bgdevs.madness.dao.entities.card.CardState.*;
 @Data
 @NoArgsConstructor
 public class Card extends BaseEntity {
+
+    private final static BigDecimal DEFAULT_CREDIT_LIMIT = BigDecimal.valueOf(50000);
+
+    private final static BigDecimal MAXIMUM_CREDIT_LIMIT = BigDecimal.valueOf(3000000);
 
     @NotNull
     @Column(unique = true)
@@ -59,6 +64,9 @@ public class Card extends BaseEntity {
     private Invoice invoice;
 
     @Nullable
+    private BigDecimal creditLimit;
+
+    @Nullable
     private BigDecimal dayLimit;
 
     @Nullable
@@ -73,11 +81,16 @@ public class Card extends BaseEntity {
         this.type = type;
         this.owner = employee;
         this.invoice = invoice;
+        setCreditLimit(DEFAULT_CREDIT_LIMIT);
     }
 
     public static Card request(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
                                @Nonnull Invoice invoice) {
         return new Card(number, type, employee, invoice);
+    }
+
+    public void updateCreditLimit(@Nonnull BigDecimal creditLimit) {
+        setCreditLimit(creditLimit);
     }
 
     public void updateLimits(@Nullable BigDecimal dayLimit, @Nullable BigDecimal monthLimit) {
@@ -171,6 +184,12 @@ public class Card extends BaseEntity {
     private void checkAndUpdateOpenedDate() {
         if (this.openedDate == null) {
             this.openedDate = LocalDateTime.now();
+        }
+    }
+
+    private void setCreditLimit(@Nonnull BigDecimal creditLimit) {
+        if (this.type == CREDIT && creditLimit.compareTo(MAXIMUM_CREDIT_LIMIT) <= 0) {
+            this.creditLimit = creditLimit;
         }
     }
 

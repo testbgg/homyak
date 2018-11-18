@@ -5,6 +5,7 @@ import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.service.card.CardService;
 import com.bgdevs.madness.service.card.CardService.AddLimitsModel;
+import com.bgdevs.madness.service.card.CardService.UpdateCreditLimits;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +54,16 @@ public class CardController {
         return ResponseEntity.created(create("/cards/" + cardModel.getId())).body(cardModel);
     }
 
+    @PutMapping("/credit-limit")
+    public ResponseEntity<Object> updateCreditLimits(@RequestBody UpdateCreditLimits model) {
+        this.cardService.updateCreditLimits(model);
+        return ResponseEntity.ok("Credit limits were updated for cards with ids: " + model.getIds());
+    }
+
     @PutMapping("/limits")
-    public ResponseEntity<Object> addLimitsToCards(@RequestBody AddLimitsModel addLimitsModel) {
-        this.cardService.addLimitToCard(addLimitsModel);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Object> addLimitsToCards(@RequestBody AddLimitsModel model) {
+        this.cardService.addLimitToCard(model);
+        return ResponseEntity.ok("Day and month money limits were updated for cards with ids: " + model.getIds());
     }
 
     @PostMapping("/{cardId}/activate")
