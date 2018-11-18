@@ -18,7 +18,7 @@ public class CardModelMapper {
     public static CardModel toModel(@Nonnull Card card) {
 
         return new CardModel(card.getId(), card.getNumber(), card.getType(),
-                toOwnerModel(card.getOwner()), toInvoiceModel(card.getInvoice()),
+                toOwnerModel(card.getOwner()), toInvoiceModel(card.getInvoice()), card.getValidUntil(),
                 card.getOpenedDate(), card.getClosedDate(),
                 card.getCreditLimit(), card.getDayLimit(), card.getMonthLimit());
     }

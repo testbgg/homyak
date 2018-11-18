@@ -53,6 +53,9 @@ public class Card extends BaseEntity {
     private LocalDateTime openedDate;
 
     @Nullable
+    private LocalDateTime validUntil;
+
+    @Nullable
     private LocalDateTime closedDate;
 
     @ManyToOne
@@ -184,6 +187,7 @@ public class Card extends BaseEntity {
     private void checkAndUpdateOpenedDate() {
         if (this.openedDate == null) {
             this.openedDate = LocalDateTime.now();
+            this.validUntil = this.openedDate.plusYears(4);
         }
     }
 

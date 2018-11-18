@@ -26,6 +26,9 @@ public class CardModel {
     private CardInvoiceModel invoice;
 
     @Nullable
+    private LocalDateTime validUntil;
+
+    @Nullable
     private LocalDateTime openedDate;
 
     @Nullable
