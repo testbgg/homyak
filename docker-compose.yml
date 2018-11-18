@@ -9,3 +9,12 @@ services:
       POSTGRES_PASSWORD: bgdevs
     ports:
     - 5432:5432
+
+  #service:
+  #  image: yattbot/techmad:6
+  #  environment:
+  #    SPRING_PROFILES_ACTIVE: postgres
+  #  ports:
+  #    - 80:8080
+  #  depends_on:
+  #    - postgresql
