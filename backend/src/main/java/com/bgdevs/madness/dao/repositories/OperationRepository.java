@@ -12,6 +12,6 @@ import java.util.List;
 public interface OperationRepository extends JpaRepository<Operation, Long> {
 
     @Nonnull
-    List<Operation> findByCardId(@Nonnull Long cardId);
+    List<Operation> findByCardIdOrderByOperationDate(@Nonnull Long cardId);
 
 }

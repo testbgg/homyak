@@ -151,7 +151,7 @@ public class Card extends BaseEntity {
 
     private boolean dayLimitExceeded() {
         if (this.dayLimit == null) {
-            return true;
+            return false;
         }
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0);
@@ -164,7 +164,7 @@ public class Card extends BaseEntity {
 
     private boolean monthLimitExceed() {
         if (this.monthLimit == null) {
-            return true;
+            return false;
         }
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = LocalDateTime.of(now.getYear(), now.getMonth(), 1, 0, 0, 0);
