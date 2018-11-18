@@ -1,5 +1,6 @@
 package com.bgdevs.madness.service.card.model;
 
+import com.bgdevs.madness.dao.entities.card.CardState;
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.entities.invoice.CurrencyType;
 import lombok.Value;
@@ -24,6 +25,8 @@ public class CardModel {
     private CardOwnerModel owner;
 
     private CardInvoiceModel invoice;
+
+    private CardState state;
 
     @Nullable
     private LocalDateTime validUntil;

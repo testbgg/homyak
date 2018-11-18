@@ -2,6 +2,7 @@ package com.bgdevs.madness.controllers.invoice;
 
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.service.invoice.InvoiceService;
+import com.bgdevs.madness.service.invoice.InvoiceService.MoveCashBetweenInvoices;
 import com.bgdevs.madness.service.invoice.model.CreateInvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModel;
 import lombok.Data;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -59,10 +59,11 @@ public class InvoiceController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{invoiceId}/add-funds")
-    public ResponseEntity<Object> increaseInvoiceCash(@PathVariable Long invoiceId, @RequestParam BigDecimal amount) {
-        this.invoiceService.increaseCash(invoiceId, amount);
-        return ResponseEntity.ok(amount.toString() + " was added to invoice with id: " + invoiceId);
+    @PostMapping("/transfer")
+    public ResponseEntity<Object> moveCashBetweenInvoices(@RequestBody MoveCashBetweenInvoices model) {
+        this.invoiceService.moveCashBetweenInvoices(model);
+        return ResponseEntity.ok(model.getAmount().toString() + " was transferred from invoice "
+                + model.getFromInvoiceId() + " to invoice " + model.getToInvoiceId());
     }
 
     @Data
