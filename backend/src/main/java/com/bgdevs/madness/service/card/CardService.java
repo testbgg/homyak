@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import static com.bgdevs.madness.service.card.model.CardModelMapper.toModel;
 
@@ -105,7 +104,7 @@ public class CardService {
                 .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         oldCard.close();
         this.cardRepository.save(oldCard);
-        Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
+        Card newCard = Card.reissue(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());
         newCard.updateLimits(oldCard.getDayLimit(), oldCard.getMonthLimit());
         this.cardRepository.save(newCard);
         return toModel(newCard);
@@ -116,7 +115,7 @@ public class CardService {
         if (type == null) {
             throw new IllegalStateException("Invalid card type: " + type);
         }
-        Card card = Card.request(UUID.randomUUID().toString(), type, employee, invoice);
+        Card card = Card.request(type, employee, invoice);
         card.updateLimits(cardToBeCreated.getDayLimit(), cardToBeCreated.getMonthLimit());
         return card;
     }

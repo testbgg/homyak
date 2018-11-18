@@ -20,9 +20,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 import static com.bgdevs.madness.dao.entities.card.CardState.*;
 import static com.bgdevs.madness.dao.entities.card.CardType.CREDIT;
+import static java.util.stream.Collectors.joining;
 
 /**
  * @author Nikita Shaldenkov
@@ -87,9 +90,29 @@ public class Card extends BaseEntity {
         setCreditLimit(DEFAULT_CREDIT_LIMIT);
     }
 
-    public static Card request(@Nonnull String number, @Nonnull CardType type, @Nullable Employee employee,
+    @Nonnull
+    public static Card request(@Nonnull CardType type, @Nullable Employee owner,
                                @Nonnull Invoice invoice) {
-        return new Card(number, type, employee, invoice);
+        return new Card(generateNumber(), type, owner, invoice);
+    }
+
+    @Nonnull
+    public static Card reissue(@Nonnull String number, @Nonnull CardType type,
+                               @Nonnull Employee owner, @Nonnull Invoice invoice) {
+        return new Card(number, type, owner, invoice);
+    }
+
+    @Nonnull
+    private static String generateNumber() {
+        return IntStream.range(0, 4)
+                .map(index -> rand4Number())
+                .boxed()
+                .map(String::valueOf)
+                .collect(joining("-"));
+    }
+
+    private static int rand4Number() {
+        return 1000 + new Random().nextInt(9000);
     }
 
     public void updateCreditLimit(@Nonnull BigDecimal creditLimit) {
