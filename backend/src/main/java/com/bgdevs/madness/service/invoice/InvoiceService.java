@@ -4,19 +4,21 @@ import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.entities.invoice.CurrencyType;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
+import com.bgdevs.madness.dao.exceptions.ElementNotFoundException;
 import com.bgdevs.madness.dao.repositories.InvoiceRepository;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CardModelMapper;
-import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import com.bgdevs.madness.service.invoice.model.CreateInvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModel;
 import com.bgdevs.madness.service.invoice.model.InvoiceModelMapper;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -35,13 +37,6 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    @Nonnull
-    private static List<CardModel> convertCards(@Nonnull List<Card> cards) {
-        return cards.stream()
-                .map(CardModelMapper::toModel)
-                .collect(toList());
-    }
-
     @Transactional(readOnly = true)
     public List<InvoiceModel> findAll(long ownerId) {
         return this.invoiceRepository.findAllByOwnerId(ownerId).stream()
@@ -53,7 +48,7 @@ public class InvoiceService {
     public InvoiceModel findOne(long invoiceId) {
         return this.invoiceRepository.findById(invoiceId)
                 .map(InvoiceModelMapper::toModel)
-                .orElseThrow(() -> new ElementNotFoundException(invoiceId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + invoiceId));
     }
 
     @Transactional(readOnly = true)
@@ -78,18 +73,25 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void increaseCash(@Nonnull Long invoiceId, @Nonnull BigDecimal amount) {
-        Invoice invoice = this.invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + invoiceId));
-        invoice.increaseCash(amount);
-        this.invoiceRepository.save(invoice);
+    public void moveCashBetweenInvoices(@Nonnull MoveCashBetweenInvoices model) {
+        if (model.amount.compareTo(ZERO) < 0) {
+            throw new IllegalStateException("Unable to perform negative money transfer between invoices.");
+        }
+        Invoice fromInvoice = this.invoiceRepository.findById(model.fromInvoiceId)
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + model.fromInvoiceId));
+        Invoice toInvoice = this.invoiceRepository.findById(model.toInvoiceId)
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id: " + model.toInvoiceId));
+        fromInvoice.decreaseCash(model.amount);
+        toInvoice.increaseCash(model.amount);
+        this.invoiceRepository.save(fromInvoice);
+        this.invoiceRepository.save(toInvoice);
     }
 
     @Transactional
     public void markAsCard(List<Long> invoiceIds) {
         invoiceIds.forEach(id -> {
             Invoice invoice = this.invoiceRepository.findById(id)
-                    .orElseThrow(() -> new ElementNotFoundException(id));
+                    .orElseThrow(() -> new ElementNotFoundException("Unable to find invoice with id:" + id));
             invoice.markAsCarded();
             this.invoiceRepository.save(invoice);
         });
@@ -101,6 +103,20 @@ public class InvoiceService {
                 UUID.randomUUID().toString(),
                 ZERO,
                 CurrencyType.valueOf(invoice.getCurrencyType()));
+    }
+
+    @Data
+    public static class MoveCashBetweenInvoices {
+
+        @NotNull
+        private BigDecimal amount;
+
+        @NotNull
+        private Long fromInvoiceId;
+
+        @NotNull
+        private Long toInvoiceId;
+
     }
 
 }

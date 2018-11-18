@@ -1,11 +1,11 @@
 package com.bgdevs.madness.service.employee;
 
 import com.bgdevs.madness.dao.entities.employee.Employee;
+import com.bgdevs.madness.dao.exceptions.ElementNotFoundException;
 import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.service.employee.model.CreateEmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModel;
 import com.bgdevs.madness.service.employee.model.EmployeeModelMapper;
-import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +34,7 @@ public class EmployeeService {
     public EmployeeModel findById(long id) {
         return this.employeeRepository.findById(id)
                 .map(EmployeeModelMapper::toModel)
-                .orElseThrow(() -> new ElementNotFoundException(id));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find employee with id:" + id));
     }
 
     private Employee toEntity(CreateEmployeeModel employee) {
@@ -50,7 +50,7 @@ public class EmployeeService {
     public EmployeeModel delete(long id) {
         EmployeeModel employeeModel = this.employeeRepository.findById(id)
                 .map(EmployeeModelMapper::toModel)
-                .orElseThrow(() -> new ElementNotFoundException(id));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find employee with id:" + id));
         this.employeeRepository.deleteById(id);
         return employeeModel;
     }

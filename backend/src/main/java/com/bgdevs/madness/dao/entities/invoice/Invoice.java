@@ -2,6 +2,8 @@ package com.bgdevs.madness.dao.entities.invoice;
 
 import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.card.Card;
+import com.bgdevs.madness.dao.exceptions.InvoiceIsNotCardedException;
+import com.bgdevs.madness.dao.exceptions.UnablePerformTransferException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,8 +14,6 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.math.BigDecimal.ZERO;
 
 /**
  * @author Nikita Shaldenkov
@@ -55,10 +55,22 @@ public class Invoice extends BaseEntity {
     }
 
     public void increaseCash(@Nonnull BigDecimal amount) {
-        if (amount.compareTo(ZERO) < 0) {
-            throw new IllegalStateException("Unable to add negative money amount to invoice cash.");
-        }
+        operationsAreAvailable();
         this.cash = this.cash.add(amount);
-
     }
+
+    public void decreaseCash(@Nonnull BigDecimal amount) {
+        operationsAreAvailable();
+        if (this.cash.compareTo(amount) < 0) {
+            throw new UnablePerformTransferException("Unable to extract " + amount + " from invoice with id: " + getId());
+        }
+        this.cash = this.cash.subtract(amount);
+    }
+
+    private void operationsAreAvailable() {
+        if (!this.isCard) {
+            throw new InvoiceIsNotCardedException(getId());
+        }
+    }
+
 }

@@ -2,9 +2,9 @@ package com.bgdevs.madness.service.operation;
 
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.operation.Operation;
+import com.bgdevs.madness.dao.exceptions.ElementNotFoundException;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.dao.repositories.OperationRepository;
-import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,14 +37,14 @@ public class OperationService {
 
     private void executeCallOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
         Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         Operation operation = card.executeCallOperation(amount, description);
         this.operationRepository.save(operation);
     }
 
     private void executePutOperation(@Nonnull Long cardId, @Nonnull BigDecimal amount, @Nonnull String description) {
         Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         Operation operation = card.executePutOperation(amount, description);
         this.operationRepository.save(operation);
     }

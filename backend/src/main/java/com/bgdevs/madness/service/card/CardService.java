@@ -4,12 +4,12 @@ import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
+import com.bgdevs.madness.dao.exceptions.ElementNotFoundException;
 import com.bgdevs.madness.dao.repositories.CardRepository;
 import com.bgdevs.madness.dao.repositories.EmployeeRepository;
 import com.bgdevs.madness.dao.repositories.InvoiceRepository;
 import com.bgdevs.madness.service.card.model.CardModel;
 import com.bgdevs.madness.service.card.model.CreateCardModel;
-import com.bgdevs.madness.service.exceptions.ElementNotFoundException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class CardService {
     public void addLimitToCard(@Nonnull AddLimitsModel addLimitsModel) {
         addLimitsModel.ids.forEach(cardId -> {
             Card card = this.cardRepository.findById(cardId)
-                    .orElseThrow(() -> new ElementNotFoundException(cardId));
+                    .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
             card.updateLimits(addLimitsModel.dayLimit, addLimitsModel.monthLimit);
             this.cardRepository.save(card);
         });
@@ -78,7 +78,7 @@ public class CardService {
     @Transactional
     public void activateCard(@Nonnull Long cardId) {
         Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         card.activate();
         this.cardRepository.save(card);
     }
@@ -86,7 +86,7 @@ public class CardService {
     @Transactional
     public void blockCard(@Nonnull Long cardId) {
         Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         card.block();
         this.cardRepository.save(card);
     }
@@ -94,7 +94,7 @@ public class CardService {
     @Transactional
     public void closeCard(@Nonnull Long cardId) {
         Card card = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         card.close();
         this.cardRepository.save(card);
     }
@@ -102,7 +102,7 @@ public class CardService {
     @Transactional
     public CardModel reissueCard(@Nonnull Long cardId) {
         Card oldCard = this.cardRepository.findById(cardId)
-                .orElseThrow(() -> new ElementNotFoundException(cardId));
+                .orElseThrow(() -> new ElementNotFoundException("Unable to find card with id:" + cardId));
         oldCard.close();
         this.cardRepository.save(oldCard);
         Card newCard = Card.request(oldCard.getNumber(), oldCard.getType(), oldCard.getOwner(), oldCard.getInvoice());

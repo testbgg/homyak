@@ -128,7 +128,7 @@ public class Card extends BaseEntity {
         checkCardIsBlocked();
         BigDecimal withdrawResult = this.invoice.getCash().subtract(cash);
         if (withdrawResult.compareTo(BigDecimal.ZERO) < 0) {
-            throw new NegativeMoneyAmountException();
+            throw new NegativeMoneyAmountException(getId());
         } else {
             checkLimits();
             this.invoice.setCash(withdrawResult);
@@ -145,10 +145,10 @@ public class Card extends BaseEntity {
 
     private void checkLimits() {
         if (dayLimitExceeded()) {
-            throw new DayLimitExceededException();
+            throw new DayLimitExceededException(getId());
         }
         if (monthLimitExceed()) {
-            throw new MonthLimitExceededException();
+            throw new MonthLimitExceededException(getId());
         }
     }
 
@@ -180,7 +180,7 @@ public class Card extends BaseEntity {
 
     private void checkCardIsBlocked() {
         if (this.state == BLOCKED) {
-            throw new CardIsBlockedException();
+            throw new CardIsBlockedException(getId());
         }
     }
 
