@@ -1,18 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
 import { Icon, Popconfirm } from "antd";
 import day from "dayjs";
 
 const getStatus = status => {
   switch (status) {
-    case "ACTIVE":
-      return "Активна";
-    case "BLOCKED":
-      return "Заблокирована";
-    case "REQUESTED":
-      return "Заказана";
-    case "CLOSED":
-      return "Закрыта";
+    case 'ACTIVE':
+      return 'Активна';
+    case 'BLOCKED':
+      return 'Заблокирована';
+    case 'REQUESTED':
+      return 'Заказана';
+    case 'CLOSED':
+      return 'Закрыта';
     default:
       return;
   }
@@ -20,40 +20,49 @@ const getStatus = status => {
 
 const TableColumns = onReIssue => [
   {
-    title: "Номер карты",
-    dataIndex: "number"
+    title: 'Номер карты',
+    dataIndex: 'number'
   },
   {
-    title: "Имя сотрудника",
-    dataIndex: "owner",
+    title: 'Имя сотрудника',
+    dataIndex: 'owner',
     render: owner =>
-      owner ? `${owner.firstName} ${owner.secondName}` : "Карта без владельца"
+      owner ? `${owner.firstName} ${owner.secondName}` : 'Карта без владельца'
   },
   {
-    title: "Дневной лимит",
-    dataIndex: "dayLimit"
+    title: 'Дневной лимит',
+    dataIndex: 'dayLimit'
   },
   {
-    title: "Месячный лимит",
-    dataIndex: "monthLimit"
+    title: 'Месячный лимит',
+    dataIndex: 'monthLimit'
   },
   {
-    title: "Статус",
-    dataIndex: "state",
+    title: 'Статус',
+    dataIndex: 'state',
     render: state => getStatus(state)
   },
   {
-    title: "Срок действия",
-    dataIndex: "validUntil",
-    render: validUntil => (validUntil ? day(validUntil).format("MM/YYYY") : "-")
+    title: 'Срок действия',
+    dataIndex: 'validUntil',
+    render: validUntil => (validUntil ? day(validUntil).format('MM/YYYY') : '-')
   },
   {
-    title: "Выписка",
-    dataIndex: "key",
+    title: 'Выписка',
+    dataIndex: 'key',
     render: key => (
-      <Link to={`/cards/${key}/operations`}>
-        <Icon type="file-text" />
-      </Link>
+      <Route>
+        {({ location }) => (
+          <Link
+            to={{
+              pathname: `/cards/${key}/operations`,
+              invoiceId: location.pathname
+            }}
+          >
+            <Icon type="file-text" />
+          </Link>
+        )}
+      </Route>
     )
   },
   {
