@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import _isEmpty from "lodash/isEmpty";
-import { Button, Icon, Modal, Table, Select, Popconfirm, message } from "antd";
-import "./Invoices.sass";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import _isEmpty from 'lodash/isEmpty';
+import { Button, Icon, Modal, Table, Select, Popconfirm, message } from 'antd';
+import './Invoices.sass';
 
 const Option = Select.Option;
 
 const columns = [
   {
-    title: "Номер расчетного счета",
-    dataIndex: "number"
+    title: 'Номер расчетного счета',
+    dataIndex: 'number'
   }
 ];
 // rowSelection object indicates the need for row selection
@@ -21,7 +21,7 @@ export default class Invoices extends Component {
     visibleInvoices: false,
     visibleCreateInvoice: false,
     confirmLoading: false,
-    newInvoiceTypeCurrency: "",
+    newInvoiceTypeCurrency: '',
     selectedInvoicesWithoutCard: [],
     visiblePopup: false
   };
@@ -31,7 +31,7 @@ export default class Invoices extends Component {
   }
 
   async fetchInvoices() {
-    const { data: invoices } = await axios.get("/api/invoices");
+    const { data: invoices } = await axios.get('/api/invoices');
     this.setState({ invoices });
   }
 
@@ -51,7 +51,7 @@ export default class Invoices extends Component {
       confirmLoading: true
     });
     axios
-      .post("/api/invoices", {
+      .post('/api/invoices', {
         currencyType: newInvoiceTypeCurrency
       })
       .then(() => {
@@ -62,7 +62,7 @@ export default class Invoices extends Component {
           },
           () => {
             this.fetchInvoices.call(this);
-            message.success("Счет создан");
+            message.success('Счет создан');
           }
         );
       });
@@ -77,7 +77,7 @@ export default class Invoices extends Component {
       confirmLoading: true
     });
     axios
-      .post("/api/invoices/mark-as-carded", {
+      .post('/api/invoices/mark-as-carded', {
         ids: selectedInvoicesWithoutCard
       })
       .then(() => {
@@ -89,7 +89,7 @@ export default class Invoices extends Component {
           },
           () => {
             this.fetchInvoices.call(this);
-            message.success("Расчетный счет успешно переведен в карточные");
+            message.success('Расчетный счет успешно переведен в карточные');
           }
         );
       });
@@ -122,7 +122,7 @@ export default class Invoices extends Component {
     const rowSelection = {
       onChange: selectedRowKeys => this.selectRow(selectedRowKeys),
       getCheckboxProps: record => ({
-        disabled: record.name === "Disabled User", // Column configuration not to be checked
+        disabled: record.name === 'Disabled User', // Column configuration not to be checked
         name: record.name
       })
     };
@@ -135,10 +135,10 @@ export default class Invoices extends Component {
         </div>
         <section>
           <div className="invoices__to-card-invoice">
-            <Button onClick={() => this.showModal("visibleInvoices")}>
+            <Button onClick={() => this.showModal('visibleInvoices')}>
               Привязать расчетный счет <Icon type="diff" />
             </Button>
-            <Button onClick={() => this.showModal("visibleCreateInvoice")}>
+            <Button onClick={() => this.showModal('visibleCreateInvoice')}>
               Создать расчетный счет <Icon type="plus-circle" />
             </Button>
             {visibleInvoices && (
@@ -147,7 +147,7 @@ export default class Invoices extends Component {
                 visible={visibleInvoices}
                 onOk={this.handlePopup}
                 confirmLoading={confirmLoading}
-                onCancel={() => this.handleCancel("visibleInvoices")}
+                onCancel={() => this.handleCancel('visibleInvoices')}
                 okButtonProps={{
                   disabled: _isEmpty(selectedInvoicesWithoutCard)
                 }}
@@ -166,9 +166,12 @@ export default class Invoices extends Component {
               <Modal
                 title="Создать счет"
                 visible={visibleCreateInvoice}
-                onOk={() => this.handleCreateInvoice("visibleCreateInvoice")}
+                onOk={() => this.handleCreateInvoice('visibleCreateInvoice')}
                 confirmLoading={confirmLoading}
-                onCancel={() => this.handleCancel("visibleCreateInvoice")}
+                onCancel={() => this.handleCancel('visibleCreateInvoice')}
+                okButtonProps={{
+                  disabled: _isEmpty(this.state.newInvoiceTypeCurrency)
+                }}
               >
                 <Select
                   placeholder="Выберите тип валюты"
@@ -183,7 +186,7 @@ export default class Invoices extends Component {
             <Popconfirm
               title="Вы согласны с правилами перевода Р/C в карточные?"
               visible={this.state.visiblePopup}
-              onConfirm={() => this.handleCarded("visibleInvoices")}
+              onConfirm={() => this.handleCarded('visibleInvoices')}
               onCancel={this.handleClosePopup}
               okText="Да"
               cancelText="Нет"
