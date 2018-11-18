@@ -71,7 +71,10 @@ public class DataCreator implements CommandLineRunner {
         IntStream.range(0, 10).forEach(index -> createEmployee());
 
         Card debitCard = Card.request(UUID.randomUUID().toString(), CardType.DEBIT, employee, cardedInvoice);
+        debitCard.activate();
         Card creditCard = Card.request(UUID.randomUUID().toString(), CardType.CREDIT, employee, cardedInvoice);
+        creditCard.activate();
+        creditCard.block();
         Card cahInOutCard = Card.request(UUID.randomUUID().toString(), CardType.CASH_IN_OUT, employee, cardedInvoice);
         this.cardRepository.saveAll(Arrays.asList(debitCard, creditCard, cahInOutCard));
     }
