@@ -3,13 +3,11 @@ package com.bgdevs.madness.config;
 import com.bgdevs.madness.dao.entities.User;
 import com.bgdevs.madness.dao.entities.card.Card;
 import com.bgdevs.madness.dao.entities.card.CardType;
+import com.bgdevs.madness.dao.entities.card.operation.Operation;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.CurrencyType;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
-import com.bgdevs.madness.dao.repositories.CardRepository;
-import com.bgdevs.madness.dao.repositories.EmployeeRepository;
-import com.bgdevs.madness.dao.repositories.InvoiceRepository;
-import com.bgdevs.madness.dao.repositories.UserRepository;
+import com.bgdevs.madness.dao.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static com.bgdevs.madness.dao.entities.card.CardType.*;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -47,6 +46,9 @@ public class DataCreator implements CommandLineRunner {
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private OperationRepository operationRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -81,21 +83,39 @@ public class DataCreator implements CommandLineRunner {
                 .map(index -> createEmployee())
                 .collect(toList());
 
-        Card debitCard1 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
-        debitCard1.activate();
-        Card debitCard2 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
-        Card debitCard3 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
-        debitCard3.block();
-        Card debitCard4 = Card.request(CardType.DEBIT, extractRandomEmployee(employees), cardedInvoice);
-        debitCard4.close();
-        Card creditCard1 = Card.request(CardType.CREDIT, extractRandomEmployee(employees), cardedInvoice);
-        creditCard1.activate();
-        Card creditCard2 = Card.request(CardType.CREDIT, extractRandomEmployee(employees), cardedInvoice);
-        creditCard2.block();
-        Card cashInOutCard = Card.request(CardType.CASH_IN_OUT, extractRandomEmployee(employees), cardedInvoice);
-        cashInOutCard.activate();
-        this.cardRepository.saveAll(Arrays.asList(debitCard1, debitCard2, debitCard3, debitCard4, creditCard1,
-                creditCard2, cashInOutCard));
+        createCard(DEBIT, employees, cardedInvoice);
+        createCard(DEBIT, employees, cardedInvoice);
+        Card blockedDebitCard = createCard(DEBIT, employees, cardedInvoice);
+        blockedDebitCard.block();
+        Card closedDebitCard = createCard(DEBIT, employees, cardedInvoice);
+        closedDebitCard.close();
+        createCard(CREDIT, employees, cardedInvoice);
+        Card blockedCreditCard = createCard(CREDIT, employees, cardedInvoice);
+        blockedCreditCard.block();
+        createCard(CASH_IN_OUT, employees, cardedInvoice);
+    }
+
+    @Nonnull
+    private Card createCard(@Nonnull CardType type, @Nonnull List<Employee> employees, @Nonnull Invoice invoice) {
+        Card card = Card.request(type, extractRandomEmployee(employees), invoice);
+        card.activate();
+        this.cardRepository.save(card);
+
+        int countOperations = 5 + new Random().nextInt(10);
+        List<Operation> operations = IntStream.range(0, countOperations).boxed()
+                .map(index -> createOperation(index, card))
+                .collect(toList());
+        this.operationRepository.saveAll(operations);
+
+        return card;
+    }
+
+    @Nonnull
+    private Operation createOperation(int numOperation, @Nonnull Card card) {
+        Random random = new Random();
+        return (new Random().nextBoolean())
+                ? card.executeCallOperation(BigDecimal.valueOf(1 + random.nextInt(5000)), "Оплата № " + numOperation)
+                : card.executePutOperation(BigDecimal.valueOf(1 + random.nextInt(5000)), "Оплата № " + numOperation);
     }
 
     @Nonnull
@@ -112,6 +132,5 @@ public class DataCreator implements CommandLineRunner {
         this.employeeRepository.save(employee);
         return employee;
     }
-
 
 }
