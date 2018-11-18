@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Icon, Modal, InputNumber, Select } from "antd";
+import { Table, Button, Icon, Modal, InputNumber, Select, message } from "antd";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 import columns from "./TableColumns";
@@ -72,7 +72,10 @@ export default class CashInOut extends Component {
 
   onReIssue = cardId => {
     const { fetchCards } = this.props;
-    axios.post(`/api/cards/${cardId}/reissue`).then(() => fetchCards());
+    axios.post(`/api/cards/${cardId}/reissue`).then(() => {
+      fetchCards();
+      message.success("Заявка на перевыпуск карты оформлена");
+    });
   };
 
   handleCancel = modalVisible => {

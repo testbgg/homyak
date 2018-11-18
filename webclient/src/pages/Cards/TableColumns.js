@@ -30,12 +30,14 @@ const TableColumns = onReIssue => [
       owner ? `${owner.firstName} ${owner.secondName}` : "Карта без владельца"
   },
   {
-    title: "Дневной лимит",
-    dataIndex: "dayLimit"
-  },
-  {
-    title: "Месячный лимит",
-    dataIndex: "monthLimit"
+    title: "Лимиты",
+    dataIndex: "dayLimit",
+    render: (value, record) => (
+      <div>
+        <p style={{ margin: "4px" }}>Д: {record.dayLimit} </p>
+        <p style={{ margin: "4px" }}>М: {record.monthLimit} </p>
+      </div>
+    )
   },
   {
     title: "Статус",
@@ -69,18 +71,20 @@ const TableColumns = onReIssue => [
     title: "Перевыпуск карты",
     dataIndex: "key",
     key: "reissue",
-    render: key => (
-      <Popconfirm
-        title="Вы действительно хотите перевыпустить карту?"
-        onConfirm={() => onReIssue(key)}
-        okText="Да"
-        cancelText="Нет"
-      >
-        <div style={{ cursor: "pointer" }}>
-          <Icon type="reload" />
-        </div>
-      </Popconfirm>
-    )
+    render: (key, record) =>
+      record.state !== "CLOSED" &&
+      record.state !== "REQUESTED" && (
+        <Popconfirm
+          title="Вы действительно хотите перевыпустить карту?"
+          onConfirm={() => onReIssue(key)}
+          okText="Да"
+          cancelText="Нет"
+        >
+          <div style={{ cursor: "pointer" }}>
+            <Icon type="reload" />
+          </div>
+        </Popconfirm>
+      )
   }
 ];
 
