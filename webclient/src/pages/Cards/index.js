@@ -112,6 +112,7 @@ class Cards extends Component {
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}
                 type="Credit"
+                status={status}
               />
             )}
             {type === "debit" && (
@@ -124,18 +125,21 @@ class Cards extends Component {
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}
                 type="Debit"
+                status={status}
               />
             )}
             {type === "cashinout" && (
               <Card
                 pathname={pathname}
                 cards={cards.filter(
-                  card => card.type === "Cash in/out" && status.includes(card.state)
+                  card =>
+                    card.type === "Cash in/out" && status.includes(card.state)
                 )}
                 invoiceId={invoiceId}
                 fetchCards={this.fetchCards.bind(this)}
                 employees={employees}
                 type="Cash in/out"
+                status={status}
               />
             )}
           </main>

@@ -88,4 +88,37 @@ const TableColumns = onReIssue => [
   }
 ];
 
+export const TableColumnsRequested = [
+  {
+    title: "Номер карты",
+    dataIndex: "number"
+  },
+  {
+    title: "Имя сотрудника",
+    dataIndex: "owner",
+    render: owner =>
+      owner ? `${owner.firstName} ${owner.secondName}` : "Карта без владельца"
+  },
+  {
+    title: "Лимиты",
+    dataIndex: "dayLimit",
+    render: (value, record) => (
+      <div>
+        <p style={{ margin: "4px" }}>Д: {record.dayLimit} </p>
+        <p style={{ margin: "4px" }}>М: {record.monthLimit} </p>
+      </div>
+    )
+  },
+  {
+    title: "Статус",
+    dataIndex: "state",
+    render: state => getStatus(state)
+  },
+  {
+    title: "Срок действия",
+    dataIndex: "validUntil",
+    render: validUntil => (validUntil ? day(validUntil).format("MM/YYYY") : "-")
+  }
+];
+
 export default TableColumns;
