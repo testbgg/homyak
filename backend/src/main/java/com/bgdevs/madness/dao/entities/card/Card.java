@@ -97,7 +97,7 @@ public class Card extends BaseEntity {
 
     @Nonnull
     public static Card reissue(@Nonnull String number, @Nonnull CardType type,
-                               @Nonnull Employee owner, @Nonnull Invoice invoice) {
+                               @Nullable Employee owner, @Nonnull Invoice invoice) {
         return new Card(number, type, owner, invoice);
     }
 
