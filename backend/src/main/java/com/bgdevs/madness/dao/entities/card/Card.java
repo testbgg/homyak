@@ -103,7 +103,7 @@ public class Card extends BaseEntity {
 
     @Nonnull
     private static String generateNumber() {
-        return IntStream.range(0, 4)
+        return "4444-3333-" + IntStream.range(0, 2)
                 .map(index -> rand4Number())
                 .boxed()
                 .map(String::valueOf)
