@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bgdevs-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bgdevs
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: bgdevs
+    spec:
+      containers:
+      - name: service
+        image: yattbot/techmad:13
+        ports:
+        - containerPort: 8080
+

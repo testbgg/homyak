@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bgdevs-postgres-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bgdevs-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bgdevs-postgres
+    spec:
+      containers:
+      - name: db
+        image: postgres:9.6.8
+        env:
+        - name: POSTGRES_DB
+          value: bgdevs
+        - name: POSTGRES_USER
+          value: bgdevs
+        - name: POSTGRES_PASSWORD
+          value: bgdevs
+        ports:
+        - containerPort: 5432
+
