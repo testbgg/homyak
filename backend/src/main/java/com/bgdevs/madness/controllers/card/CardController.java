@@ -55,13 +55,13 @@ public class CardController {
     }
 
     @PutMapping("/credit-limit")
-    public ResponseEntity<Object> updateCreditLimits(@RequestBody UpdateCreditLimits model) {
+    public ResponseEntity<Object> updateCreditLimits(@Valid @RequestBody UpdateCreditLimits model) {
         this.cardService.updateCreditLimits(model);
         return ResponseEntity.ok("Credit limits were updated for cards with ids: " + model.getIds());
     }
 
     @PutMapping("/limits")
-    public ResponseEntity<Object> addLimitsToCards(@RequestBody AddLimitsModel model) {
+    public ResponseEntity<Object> addLimitsToCards(@Valid @RequestBody AddLimitsModel model) {
         this.cardService.addLimitToCard(model);
         return ResponseEntity.ok("Day and month money limits were updated for cards with ids: " + model.getIds());
     }

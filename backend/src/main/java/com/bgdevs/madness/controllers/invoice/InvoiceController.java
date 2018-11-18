@@ -54,13 +54,13 @@ public class InvoiceController {
     }
 
     @PostMapping("/mark-as-carded")
-    public ResponseEntity<Object> markInvoiceAsCard(@RequestBody IdsWrapper ids) {
+    public ResponseEntity<Object> markInvoiceAsCard(@Valid @RequestBody IdsWrapper ids) {
         this.invoiceService.markAsCard(ids.getIds());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<Object> moveCashBetweenInvoices(@RequestBody MoveCashBetweenInvoices model) {
+    public ResponseEntity<Object> moveCashBetweenInvoices(@Valid @RequestBody MoveCashBetweenInvoices model) {
         this.invoiceService.moveCashBetweenInvoices(model);
         return ResponseEntity.ok(model.getAmount().toString() + " was transferred from invoice "
                 + model.getFromInvoiceId() + " to invoice " + model.getToInvoiceId());
