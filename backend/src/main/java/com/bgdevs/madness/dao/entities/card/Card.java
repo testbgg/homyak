@@ -41,7 +41,6 @@ public class Card extends BaseEntity {
     private final static BigDecimal MAXIMUM_CREDIT_LIMIT = BigDecimal.valueOf(3000000);
 
     @NotNull
-    @Column(unique = true)
     private String number;
 
     @Enumerated(EnumType.STRING)
