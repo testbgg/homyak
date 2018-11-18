@@ -9,7 +9,7 @@ const Option = Select.Option;
 
 const columns = [
   {
-    title: 'Номер Л/C',
+    title: 'Номер расчетного счета',
     dataIndex: 'number'
   }
 ];
@@ -113,15 +113,15 @@ export default class Invoices extends Component {
     return (
       <div className="container">
         <div>
-          <h1>Расчетные Л/C</h1>
+          <h1>Карточные Р/C</h1>
         </div>
         <section>
           <div className="invoices__to-card-invoice">
             <Button onClick={() => this.showModal('visibleInvoices')}>
-              Привязать Л/C <Icon type="diff" />
+              Привязать расчетный счет <Icon type="diff" />
             </Button>
             <Button onClick={() => this.showModal('visibleCreateInvoice')}>
-              Создать Л/C <Icon type="plus-circle" />
+              Создать расчетный счет <Icon type="plus-circle" />
             </Button>
             <Modal
               title="Выберите счет"
@@ -166,7 +166,7 @@ export default class Invoices extends Component {
                     >
                       <div className="invoices__invoice" key={id}>
                         <div className="invoices__invoice-number">
-                          Л/C № {number}
+                          Р/C № {number}
                         </div>
                         <div className="invoices__invoice-cash">
                           На счету: {cash}
