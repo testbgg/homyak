@@ -4,8 +4,8 @@ import com.bgdevs.madness.dao.entities.BaseEntity;
 import com.bgdevs.madness.dao.entities.card.operation.Operation;
 import com.bgdevs.madness.dao.entities.employee.Employee;
 import com.bgdevs.madness.dao.entities.invoice.Invoice;
-import com.bgdevs.madness.dao.exceptions.CardIsBlockedException;
 import com.bgdevs.madness.dao.exceptions.DayLimitExceededException;
+import com.bgdevs.madness.dao.exceptions.HomyakException;
 import com.bgdevs.madness.dao.exceptions.MonthLimitExceededException;
 import com.bgdevs.madness.dao.exceptions.NegativeMoneyAmountException;
 import lombok.Data;
@@ -148,7 +148,7 @@ public class Card extends BaseEntity {
     }
 
     public Operation executeCallOperation(@Nonnull BigDecimal cash, @Nonnull String description) {
-        checkCardIsBlocked();
+        checkCardIsActive();
         BigDecimal withdrawResult = this.invoice.getCash().subtract(cash);
         if (withdrawResult.compareTo(BigDecimal.ZERO) < 0) {
             throw new NegativeMoneyAmountException(getId());
@@ -160,7 +160,7 @@ public class Card extends BaseEntity {
     }
 
     public Operation executePutOperation(@Nonnull BigDecimal cash, @Nonnull String description) {
-        checkCardIsBlocked();
+        checkCardIsActive();
         BigDecimal withdrawResult = this.invoice.getCash().add(cash);
         this.invoice.setCash(withdrawResult);
         return Operation.executePutOperation(cash, description, this);
@@ -201,9 +201,9 @@ public class Card extends BaseEntity {
         return sum.compareTo(this.monthLimit.negate()) <= 0;
     }
 
-    private void checkCardIsBlocked() {
-        if (this.state == BLOCKED) {
-            throw new CardIsBlockedException(getId());
+    private void checkCardIsActive() {
+        if (this.state != ACTIVE) {
+            throw new HomyakException("Unable to perform any action for not active card with id: " + getId());
         }
     }
 
