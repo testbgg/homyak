@@ -71,7 +71,8 @@ export default class CashInOut extends Component {
   };
 
   onReIssue = cardId => {
-    axios.post(`/api/cards/${cardId}/reissue`);
+    const { fetchCards } = this.props;
+    axios.post(`/api/cards/${cardId}/reissue`).then(() => fetchCards());
   };
 
   handleCancel = modalVisible => {
