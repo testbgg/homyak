@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-
 @SpringBootApplication
 public class HomyakApplication {
 
@@ -24,8 +22,12 @@ public class HomyakApplication {
     class SpaRedirectConfiguration extends WebMvcConfigurerAdapter {
 
 
-        @GetMapping(value = "/invoices/**", produces = MediaType.TEXT_HTML_VALUE)
-        public ModelAndView returnSpaBundle(HttpServletRequest request) {
+        @GetMapping(value = {
+                "/invoices/**",
+                "/cards/**",
+                "/login"
+        }, produces = MediaType.TEXT_HTML_VALUE)
+        public ModelAndView returnSpaBundle() {
             return new ModelAndView("index");
         }
     }

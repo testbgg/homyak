@@ -2,7 +2,7 @@
 # builds bot image and pushes it to dockerhub
 
 # напишите сюда версию для деплоя
-version=8           #TODO paste version here
+version=9           #TODO paste version here
 
 LOCAL_NAME=bgdevs:${version}
 IMAGE=yattbot/techmad:${version}
