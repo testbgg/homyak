@@ -2,10 +2,11 @@
 # builds bot image and pushes it to dockerhub
 
 # напишите сюда версию для деплоя
-version=6           #TODO paste version here
+version=8           #TODO paste version here
 
 LOCAL_NAME=bgdevs:${version}
 IMAGE=yattbot/techmad:${version}
+LOGIN=yattbot
 
 
 echo ">>> Building local image: ${LOCAL_NAME}"
@@ -17,7 +18,7 @@ docker tag ${LOCAL_NAME} ${IMAGE}
 
 
 echo ">>> Logging in to Docker Hub"
-cat pwd.txt | docker login --username $D_LOGIN --password-stdin
+cat pwd.txt | docker login --username ${LOGIN} --password-stdin
 
 
 echo ">>> Pushing image"

@@ -5,14 +5,14 @@ import day from "dayjs";
 
 const getStatus = status => {
   switch (status) {
-    case 'ACTIVE':
-      return 'Активна';
-    case 'BLOCKED':
-      return 'Заблокирована';
-    case 'REQUESTED':
-      return 'Заказана';
-    case 'CLOSED':
-      return 'Закрыта';
+    case "ACTIVE":
+      return "Активна";
+    case "BLOCKED":
+      return "Заблокирована";
+    case "REQUESTED":
+      return "Заказана";
+    case "CLOSED":
+      return "Закрыта";
     default:
       return;
   }
@@ -20,36 +20,36 @@ const getStatus = status => {
 
 const TableColumns = onReIssue => [
   {
-    title: 'Номер карты',
-    dataIndex: 'number'
+    title: "Номер карты",
+    dataIndex: "number"
   },
   {
-    title: 'Имя сотрудника',
-    dataIndex: 'owner',
+    title: "Имя сотрудника",
+    dataIndex: "owner",
     render: owner =>
-      owner ? `${owner.firstName} ${owner.secondName}` : 'Карта без владельца'
+      owner ? `${owner.firstName} ${owner.secondName}` : "Карта без владельца"
   },
   {
-    title: 'Дневной лимит',
-    dataIndex: 'dayLimit'
+    title: "Дневной лимит",
+    dataIndex: "dayLimit"
   },
   {
-    title: 'Месячный лимит',
-    dataIndex: 'monthLimit'
+    title: "Месячный лимит",
+    dataIndex: "monthLimit"
   },
   {
-    title: 'Статус',
-    dataIndex: 'state',
+    title: "Статус",
+    dataIndex: "state",
     render: state => getStatus(state)
   },
   {
-    title: 'Срок действия',
-    dataIndex: 'validUntil',
-    render: validUntil => (validUntil ? day(validUntil).format('MM/YYYY') : '-')
+    title: "Срок действия",
+    dataIndex: "validUntil",
+    render: validUntil => (validUntil ? day(validUntil).format("MM/YYYY") : "-")
   },
   {
-    title: 'Выписка',
-    dataIndex: 'key',
+    title: "Выписка",
+    dataIndex: "key",
     render: key => (
       <Route>
         {({ location }) => (
@@ -76,7 +76,9 @@ const TableColumns = onReIssue => [
         okText="Да"
         cancelText="Нет"
       >
-        <Icon type="reload" />
+        <div style={{ cursor: "pointer" }}>
+          <Icon type="reload" />
+        </div>
       </Popconfirm>
     )
   }
